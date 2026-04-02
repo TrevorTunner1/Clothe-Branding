@@ -1,13 +1,24 @@
+/* Spring Animation Easing */
+:root {
+  /* anime.js spring default */
+  --spring-default: linear(0, 0.0107, 0.0398, 0.0834, 0.138, 0.2003, 0.2677, 0.3379, 0.4089, 0.4791, 0.5471, 0.612, 0.6731, 0.7297, 0.7815, 0.8283, 0.87, 0.9068, 0.9388, 0.9662, 0.9892, 1.0083, 1.0237, 1.0357, 1.0449, 1.0514, 1.0556, 1.058, 1.0587, 1.0581, 1.0563, 1.0538, 1.0506, 1.0469, 1.043, 1.0388, 1.0347, 1.0306, 1.0266, 1.0228, 1.0192, 1.0159, 1.0128, 1.0101, 1.0076, 1.0055, 1.0036, 1.002, 1.0006, 0.9995, 0.9986, 0.9979, 0.9974, 0.997, 0.9967, 0.9966, 0.9966, 0.9966, 0.9967, 0.9968, 0.997, 0.9972, 0.9975, 0.9977, 0.998, 0.9982, 0.9984, 0.9987, 0.9989, 0.9991, 0.9992, 0.9994, 0.9996, 0.9997, 0.9998, 0.9999, 1, 1, 1.0001, 1.0001, 1.0002, 1.0002, 1.0002, 1.0002, 1.0002, 1.0002, 1.0002, 1.0002, 1.0002, 1.0002, 1.0001, 1.0001, 1.0001, 1.0001, 1.0001, 1.0001, 1.0001, 1.0001, 1, 1, 1);
+  
+  /* Purple Taupe Accent */
+  --accent-purple-taupe: #474145;
+  --accent-purple-light: #5a545a;
+}
+
 .header {
     height: 80px;
     width: 100%;
-    background: var(--brut-bg); /* Pure Black #000 */
+    background: var(--brut-bg);
     border-bottom: 1px solid var(--brut-border);
     position: sticky;
     top: 0;
     z-index: 1100;
     display: flex;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .container {
@@ -20,10 +31,16 @@
 
 /* --- MOBILE BRANDING (LOGO + NAME) --- */
 .mobileBrand {
-    display: none; /* Hidden on laptop by default */
+    display: none;
     align-items: center;
     gap: 12px;
     cursor: pointer;
+    color: var(--brut-text);
+    transition: transform 0.3s;
+}
+
+.mobileBrand:hover {
+    transform: scale(1.02);
 }
 
 .brandName {
@@ -37,29 +54,36 @@
 /* --- LAPTOP SEARCH CONTAINER --- */
 .searchContainer {
     display: flex;
-    flex: 0 1 400px;
+    flex: 0 1 450px;
     position: relative;
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .searchContainer.expanded {
-    flex: 0 1 650px;
+    flex: 0 1 700px;
 }
 
 .searchBar {
     width: 100%;
-    background: var(--brut-card); /* Grok Charcoal #0e0e0e */
-    border: 1px solid var(--brut-border);
+    background: var(--brut-hover);
+    border: 1.5px solid transparent;
     border-radius: 50px;
-    padding: 12px 24px;
+    padding: 14px 24px;
     display: flex;
     align-items: center;
     gap: 12px;
+    transition: all 0.3s;
 }
 
 .searchContainer.expanded .searchBar {
     background: var(--brut-bg);
-    border-color: var(--brut-text);
+    border-color: var(--accent-purple-taupe);
+    box-shadow: 0 4px 20px rgba(71, 65, 69, 0.15);
+}
+
+.searchBar svg {
+    flex-shrink: 0;
+    color: var(--brut-text);
 }
 
 .searchBar input {
@@ -70,86 +94,205 @@
     color: var(--brut-text);
     font-family: 'Outfit', sans-serif;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.95rem;
+}
+
+.searchBar input::placeholder {
+    color: var(--brut-inactive);
 }
 
 /* --- SEARCH DROPDOWN --- */
 .searchDropdown {
     position: absolute;
-    top: 60px;
+    top: calc(100% + 12px);
     left: 0;
     width: 100%;
-    background: var(--brut-card);
+    background: var(--brut-bg);
     border: 1px solid var(--brut-border);
     border-radius: 20px;
     padding: 25px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    animation: dropdownAppear 0.3s ease;
+}
+
+@keyframes dropdownAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .dropdownSection h4 {
     font-size: 0.7rem;
     text-transform: uppercase;
     color: var(--brut-text);
-    opacity: 0.4;
+    opacity: 0.5;
     letter-spacing: 1.5px;
     margin-bottom: 15px;
+    font-weight: 800;
 }
 
-.marginTop { margin-top: 25px; }
+.marginTop { 
+    margin-top: 25px; 
+}
 
-.recentItem {
-    display: block;
+/* Search Results List with Images */
+.searchResultsList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.searchResultItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    text-align: left;
-    background: none;
-    border: none;
+    background: var(--brut-hover);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 12px 16px;
     color: var(--brut-text);
-    padding: 10px 0;
     font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Outfit', sans-serif;
 }
 
-.tagCloud { display: flex; gap: 10px; }
+.searchResultItem:hover {
+    background: var(--brut-bg);
+    border-color: var(--accent-purple-taupe);
+    transform: translateX(4px);
+}
+
+.resultText {
+    flex: 1;
+}
+
+.resultImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--brut-border);
+    flex-shrink: 0;
+}
+
+.resultImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tagCloud { 
+    display: flex; 
+    gap: 10px; 
+    flex-wrap: wrap;
+}
+
 .trendTag {
     background: var(--brut-hover);
     border: 1px solid var(--brut-border);
     color: var(--brut-text);
-    padding: 8px 16px;
+    padding: 8px 18px;
     border-radius: 50px;
     font-weight: 700;
     font-size: 0.8rem;
     cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Outfit', sans-serif;
 }
 
-/* --- HEADER ACTIONS (CART) --- */
+.trendTag:hover {
+    background: var(--accent-purple-taupe);
+    color: #ffffff;
+    border-color: var(--accent-purple-taupe);
+}
+
+/* --- HEADER ACTIONS (ORDER + CART) --- */
 .headerActions {
     display: flex;
     align-items: center;
+    gap: 15px;
 }
 
-.cartBtn {
-    background: none;
-    border: none;
+.iconBtn {
+    background: var(--brut-hover);
+    border: 1.5px solid transparent;
     color: var(--brut-text);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     cursor: pointer;
-    padding: 10px;
+    transition: all 0.3s ease;
 }
 
-.cartBadge {
+.iconBtn:hover {
+    background: var(--accent-purple-taupe);
+    color: #ffffff;
+    border-color: var(--accent-purple-taupe);
+}
+
+/* Spring Animation on Click */
+.iconBtn:active {
+    animation: springBounce 0.6s var(--spring-default);
+}
+
+@keyframes springBounce {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Badge Styling */
+.badge {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    background: var(--brut-text); /* White circle */
-    color: var(--brut-bg);       /* Black number */
-    font-size: 0.65rem;
-    width: 18px;
-    height: 18px;
+    top: -6px;
+    right: -6px;
+    background: var(--brut-text);
+    color: var(--brut-bg);
+    font-size: 0.7rem;
+    min-width: 20px;
+    height: 20px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 900;
+    padding: 0 5px;
+    border: 2px solid var(--brut-bg);
+    animation: badgePulse 0.4s var(--spring-default);
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Accent on hover for badges */
+.iconBtn:hover .badge {
+    background: #ffffff;
+    color: var(--accent-purple-taupe);
+    border-color: var(--accent-purple-taupe);
 }
 
 /* --- RESPONSIVE LOGIC --- */
@@ -161,14 +304,31 @@
     }
 
     .mobileBrand {
-        display: flex; /* Logo + Name appears only here */
+        display: flex;
     }
 
     .searchContainer {
-        display: none; /* Hide Search bar on mobile header */
+        display: none;
     }
 
     .headerActions {
-        display: flex; /* Cart icon stays in the top right */
+        display: flex;
+        gap: 10px;
+    }
+
+    .iconBtn {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* Tablet adjustments */
+@media (min-width: 901px) and (max-width: 1200px) {
+    .searchContainer {
+        flex: 0 1 350px;
+    }
+
+    .searchContainer.expanded {
+        flex: 0 1 550px;
     }
 }

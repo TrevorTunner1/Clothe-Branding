@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
 
-:root {
+/* :root {
   --brut-bg: #ffffff;
   --brut-text: #000000;
   --brut-card: #f9f9f9;
@@ -9,11 +9,32 @@
 }
 
 [data-theme='dark'] {
-  --brut-bg: #000000;      /* Full Black */
-  --brut-text: #efefef;    /* Matte White */
-  --brut-card: #0e0e0e;    /* Grok Charcoal for cards */
-  --brut-border: #1d1d1d;  /* Dark borders */
-  --brut-hover: #1a1a1a;   /* Subtle hover highlights */
+  --brut-bg: #000000;      
+  --brut-text: #efefef; 
+  --brut-card: #0e0e0e;    
+  --brut-border: #1d1d1d;  
+  --brut-hover: #1a1a1a;   
+}  */
+
+:root {
+    --brut-white: #ffffff;
+    --brut-black: #000000;
+    --brut-bg: #ffffff;
+    --brut-text: #000000;
+    --brut-border: #e8e8e8;
+    --brut-card: #f9f9f9;
+    --brut-hover: #f1f1f1;
+    --brut-accent: #0F0F0F; /* Initial accent */
+}
+
+[data-theme='dark'] {
+    --brut-bg: #0F0F0F;      /* Inkwell Background */
+    --brut-card: #2A2A2A;    /* Lunar Eclipse Surface */
+    --brut-accent: #474145;  /* Purple Taupe for Active Elements */
+    --brut-text: #ffffff;
+    --brut-border: #333333;
+    --brut-hover: #3a3a3a;
+    --brut-white: #ffffff;   /* Used for Logo fill */
 }
 
 * {
