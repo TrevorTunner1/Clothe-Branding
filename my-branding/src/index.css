@@ -30,11 +30,11 @@
 [data-theme='dark'] {
     --brut-bg: #0F0F0F;      /* Inkwell Background */
     --brut-card: #2A2A2A;    /* Lunar Eclipse Surface */
-    --brut-accent: #474145;  /* Purple Taupe for Active Elements */
+    --brut-accent: #474145;  
     --brut-text: #ffffff;
     --brut-border: #333333;
     --brut-hover: #3a3a3a;
-    --brut-white: #ffffff;   /* Used for Logo fill */
+    --brut-white: #ffffff;   
 }
 
 * {

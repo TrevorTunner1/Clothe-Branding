@@ -2,7 +2,7 @@
 
 .container {
     padding: 0 5%;
-    background-color: var(--brut-bg); /* Pure Black */
+    background-color: var(--brut-bg);
     animation: fadeIn 0.8s ease;
 }
 
@@ -34,12 +34,12 @@
     letter-spacing: 2px;
 }
 
-/* --- MASONRY GRID (4 COLUMNS) --- */
+/* --- 4 COLUMN GRID --- */
 .masonry {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 items per row as requested */
-    gap: 25px;
-    padding-bottom: 100px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    padding-bottom: 120px;
 }
 
 .card {
@@ -57,7 +57,7 @@
 .imageContainer {
     width: 100%;
     background-color: var(--brut-card); /* Grok Charcoal */
-    padding: 12px; /* Inner spacing for softness */
+    padding: 12px;
     border-radius: 28px;
     border: 1px solid var(--brut-border);
     transition: border-color 0.3s;
@@ -65,7 +65,7 @@
 
 .imageInner {
     position: relative;
-    aspect-ratio: 1 / 1.2; /* Taller technical ratio */
+    aspect-ratio: 1 / 1.25;
     border-radius: 20px;
     overflow: hidden;
     background-color: #000;
@@ -82,11 +82,9 @@
     transform: scale(1.1);
 }
 
-/* --- CATEGORY TAG --- */
 .categoryTag {
     position: absolute;
-    top: 15px;
-    left: 15px;
+    top: 15px; left: 15px;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(12px);
     color: #fff;
@@ -99,52 +97,41 @@
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* --- HOVER ACTIONS --- */
 .cardActions {
     position: absolute;
-    bottom: 15px;
-    right: 15px;
-    display: flex;
-    gap: 8px;
+    bottom: 15px; right: 15px;
+    display: flex; gap: 8px;
     opacity: 0;
     transform: translateY(10px);
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.cardActions.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
+.cardActions.visible { opacity: 1; transform: translateY(0); }
 
 .actionBtn {
-    background: var(--brut-text); /* White circle */
-    color: var(--brut-bg);       /* Black icon */
+    background: var(--brut-text);
+    color: var(--brut-bg);
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 40px; height: 40px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
-.saved {
-    background: #ff4444 !important; /* Visual feedback for save */
-    color: #fff !important;
-}
+.saved { background: #ff4444 !important; color: #fff !important; }
 
-/* --- DETAILS AREA --- */
+/* --- DETAILS & METRICS --- */
 .cardDetails {
-    padding: 15px 5px;
+    padding: 18px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .productHeader {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 8px;
 }
 
 .productHeader h4 {
@@ -153,29 +140,73 @@
     font-size: 1rem;
     color: var(--brut-text);
     margin: 0;
-    line-height: 1.2;
 }
 
 .pricePill {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--brut-text);
-    background: var(--brut-card);
-    padding: 2px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--brut-border);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--brut-bg);
+    background: var(--brut-text);
+    padding: 4px 10px;
+    border-radius: 6px;
 }
 
 .descriptionText {
     font-size: 0.8rem;
     color: var(--brut-text);
-    opacity: 0.4; /* Soft muted description */
+    opacity: 0.5;
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* --- STOCK & PROGRESS --- */
+.metricsArea {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stockInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stockInfo span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--brut-text);
+    opacity: 0.8;
+}
+
+.progressBar {
+    width: 100%;
+    height: 2px;
+    background: var(--brut-border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    transition: width 1s ease-in-out;
+}
+
+.socialProof {
+    font-size: 0.75rem;
+    color: var(--brut-text);
+    opacity: 0.4;
+}
+
+.socialProof strong {
+    color: var(--brut-text);
+    opacity: 1;
 }
 
 /* --- RESPONSIVE --- */
@@ -184,13 +215,13 @@
 }
 
 @media (max-width: 900px) {
-    .masonry { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .masonry { grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .heroText { font-size: 2.5rem; }
     .imageContainer { padding: 8px; border-radius: 20px; }
-    .cardActions { opacity: 1; transform: none; } /* Always show on mobile */
+    .cardActions { opacity: 1; transform: none; }
 }
 
 @media (max-width: 480px) {
     .heroText { font-size: 2rem; }
-    .pricePill { font-size: 0.9rem; }
+    .masonry { gap: 12px; }
 }

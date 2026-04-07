@@ -306,7 +306,7 @@
 .linkCol { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
 .linkCol h4 { font-size: 0.75rem; text-transform: uppercase; color: var(--brut-text); opacity: 0.4; letter-spacing: 1.5px; margin-bottom: 10px; }
 .linkCol a, .linkCol span { color: var(--brut-text); text-decoration: none; font-size: 0.95rem; font-weight: 500; }
-.linkCol a:hover { text-decoration: underline; color: #fff; }
+.linkCol a:hover { text-decoration: underline; color: #473e3e; }
 
 .legalFooter { 
     border-top: 1px solid var(--brut-border); 

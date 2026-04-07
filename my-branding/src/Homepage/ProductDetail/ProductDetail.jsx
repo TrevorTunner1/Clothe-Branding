@@ -3,13 +3,27 @@ import styles from './ProductDetail.module.css';
 
 const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => {
   const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedColor, setSelectedColor] = useState('Matte Black');
+  const [activeImg, setActiveImg] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
 
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+  const colors = [
+    { name: 'Matte Black', hex: '#000000' },
+    { name: 'Lunar Grey', hex: '#2A2A2A' },
+    { name: 'Paper Bone', hex: '#e1decc' }
+  ];
+
+  // Multiple shots of the product
+  const productImages = [
+    product.img,
+    "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600",
+    "https://images.unsplash.com/photo-1574180563860-dc120042f485?w=600"
+  ];
   
   const handleAddToCart = () => {
-    addToCart(product, quantity, selectedSize);
+    addToCart(product, quantity, selectedSize, selectedColor);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
@@ -17,21 +31,34 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
   return (
     <div className={styles.container}>
       <button onClick={onBack} className={styles.backBtn}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M19 12H5M12 19l-7-7 7-7"/>
         </svg>
         Back to Catalog
       </button>
 
       <div className={styles.productLayout}>
-        {/* Image Section */}
+        {/* LEFT SIDE: Image Section (Sticky) */}
         <div className={styles.imageSection}>
           <div className={styles.mainImage}>
-            <img src={product.img} alt={product.title} />
+            <img src={productImages[activeImg]} alt={product.title} />
+          </div>
+          
+          {/* NEW: Multi-image thumbnails (AliExpress Style) */}
+          <div className={styles.thumbnailGrid}>
+            {productImages.map((img, idx) => (
+              <div 
+                key={idx} 
+                className={`${styles.thumb} ${activeImg === idx ? styles.activeThumb : ''}`}
+                onClick={() => setActiveImg(idx)}
+              >
+                <img src={img} alt="Shot" />
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Details Section */}
+        {/* RIGHT SIDE: Details Section */}
         <div className={styles.detailsSection}>
           <div className={styles.productHeader}>
             <div>
@@ -41,7 +68,6 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
             <button 
               className={`${styles.saveBtn} ${isSaved ? styles.saved : ''}`}
               onClick={toggleSaved}
-              aria-label={isSaved ? "Remove from saved" : "Save item"}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
@@ -51,24 +77,27 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
 
           <p className={styles.productPrice}>{product.price}</p>
 
-          {/* Product Details */}
+          {/* NEW: Color Selection */}
+          <div className={styles.selectorSection}>
+            <h4 className={styles.selectorTitle}>Color: <span>{selectedColor}</span></h4>
+            <div className={styles.colorGrid}>
+              {colors.map((color) => (
+                <button 
+                  key={color.name}
+                  className={`${styles.colorCircle} ${selectedColor === color.name ? styles.activeColor : ''}`}
+                  style={{ backgroundColor: color.hex }}
+                  onClick={() => setSelectedColor(color.name)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Product Specs */}
           <div className={styles.productSpecs}>
-            <div className={styles.specItem}>
-              <span className={styles.specLabel}>Composition</span>
-              <strong>100% Organic Cotton</strong>
-            </div>
-            <div className={styles.specItem}>
-              <span className={styles.specLabel}>Weight</span>
-              <strong>Heavyweight (300 GSM)</strong>
-            </div>
-            <div className={styles.specItem}>
-              <span className={styles.specLabel}>Care</span>
-              <strong>Machine wash cold</strong>
-            </div>
-            <div className={styles.specItem}>
-              <span className={styles.specLabel}>Origin</span>
-              <strong>Made in Portugal</strong>
-            </div>
+            <div className={styles.specItem}><span className={styles.specLabel}>Composition</span><strong>100% Organic Cotton</strong></div>
+            <div className={styles.specItem}><span className={styles.specLabel}>Weight</span><strong>Heavyweight (450 GSM)</strong></div>
+            <div className={styles.specItem}><span className={styles.specLabel}>Origin</span><strong>Brutige Atelier</strong></div>
+            <div className={styles.specItem}><span className={styles.specLabel}>Turnaround</span><strong>14 Working Days</strong></div>
           </div>
 
           {/* Size Selection */}
@@ -90,29 +119,21 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
             </div>
           </div>
 
-          {/* Quantity Selection */}
-          <div className={styles.quantitySection}>
-            <h4>Quantity</h4>
-            <div className={styles.quantityControl}>
-              <button 
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                aria-label="Decrease quantity"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-              </button>
-              <span>{quantity}</span>
-              <button 
-                onClick={() => setQuantity(quantity + 1)}
-                aria-label="Increase quantity"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="12" y1="5" x2="12" y2="19"/>
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-              </button>
+          {/* Quantity & Message Maker */}
+          <div className={styles.utilityRow}>
+            <div className={styles.quantitySection}>
+                <div className={styles.quantityControl}>
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+                <span>{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                </div>
             </div>
+
+            {/* NEW: Message Maker Button */}
+            <button className={styles.messageBtn}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/></svg>
+              Message Maker
+            </button>
           </div>
 
           {/* Action Buttons */}
@@ -121,22 +142,7 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
               className={`${styles.addToCartBtn} ${addedToCart ? styles.added : ''}`}
               onClick={handleAddToCart}
             >
-              {addedToCart ? (
-                <>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  Added to Cart
-                </>
-              ) : (
-                <>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                    <path d="M16 10a4 4 0 0 1-8 0"/>
-                  </svg>
-                  Add to Cart
-                </>
-              )}
+              {addedToCart ? "Added to Loop" : "Add to Cart"}
             </button>
             <button className={styles.brandBtn}>
               Brand This Item
@@ -146,23 +152,12 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
           {/* Features */}
           <div className={styles.features}>
             <div className={styles.feature}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-              </svg>
-              <div>
-                <strong>Free Shipping</strong>
-                <p>On orders over $100</p>
-              </div>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <div><strong>Infrastructure Shipping</strong><p>Global fulfillment included</p></div>
             </div>
             <div className={styles.feature}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-              <div>
-                <strong>Easy Returns</strong>
-                <p>30-day return policy</p>
-              </div>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <div><strong>Verified Maker</strong><p>Quality checked by Brutige Studio</p></div>
             </div>
           </div>
         </div>

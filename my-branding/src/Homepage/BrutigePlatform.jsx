@@ -16,32 +16,33 @@ import styles from './BrutigePlatform.module.css';
 const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentTab = location.pathname.split('/').pop() || 'shop';
+  
+  // High-end route detection
+  const pathSegments = location.pathname.split('/');
+  const currentTab = pathSegments[2] || 'shop';
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [savedItems, setSavedItems] = useState([]);
 
-  // Navigation logic
+  // Navigation logic with auto-reset for product detail
   const handleTabChange = (tabId) => {
     setSelectedProduct(null);
     navigate(`/platform/${tabId}`);
   };
 
-  // Cart Functions
+  // State Persistance
+  useEffect(() => {
+    const saved = localStorage.getItem('brut_saved');
+    if (saved) setSavedItems(JSON.parse(saved));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('brut_saved', JSON.stringify(savedItems));
+  }, [savedItems]);
+
   const addToCart = (product, quantity = 1, size = 'M') => {
     setCartItems(prev => [...prev, { ...product, quantity, size }]);
-    alert("Added to branding loop.");
-  };
-
-  const removeItem = (id, size) => {
-    setCartItems(prev => prev.filter(item => !(item.id === id && item.size === size)));
-  };
-
-  const updateQuantity = (id, size, delta) => {
-    setCartItems(prev => prev.map(item => 
-      (item.id === id && item.size === size) ? { ...item, quantity: Math.max(1, delta) } : item
-    ));
   };
 
   const toggleSaved = (product) => {
@@ -53,14 +54,26 @@ const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
 
   return (
     <div className={styles.platformWrapper}>
-      <Sidebar activeTab={currentTab} setActiveTab={handleTabChange} isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      <Sidebar 
+        activeTab={currentTab} 
+        setActiveTab={handleTabChange} 
+        isDarkMode={isDarkMode} 
+        toggleTheme={toggleTheme} 
+      />
 
       <main className={styles.mainContent}>
-        {!selectedProduct && <HomeHeader activeTab={currentTab} setActiveTab={handleTabChange} />}
+        {!selectedProduct && (
+          <HomeHeader 
+            activeTab={currentTab} 
+            setActiveTab={handleTabChange} 
+            cartCount={cartItems.length} 
+          />
+        )}
         
         <div className={styles.viewport}>
           <Routes>
             <Route path="/" element={<Navigate to="shop" replace />} />
+            
             <Route path="shop" element={
                selectedProduct ? (
                  <ProductDetail 
@@ -71,17 +84,28 @@ const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
                  <MasonryFeed onSelect={setSelectedProduct} savedItems={savedItems} toggleSaved={toggleSaved} addToCart={addToCart} />
                )
             } />
+            
             <Route path="chat" element={<ChatRoom />} />
-            <Route path="studio" element={<MakerStudio />} />
+            
+            {/* NESTED MAKER ROUTES: studio/* enables /platform/studio/queue */}
+            <Route path="studio/*" element={<MakerStudio />} />
+            
             <Route path="profile" element={<ProfileSettings />} />
-            <Route path="cart" element={<CartView cartItems={cartItems} removeItem={removeItem} updateQuantity={updateQuantity} />} />
+            <Route path="settings" element={<ProfileSettings />} />
+            <Route path="cart" element={<CartView cartItems={cartItems} />} />
             <Route path="orders" element={<OrdersView />} />
             <Route path="saved" element={<SavedView savedItems={savedItems} onSelect={setSelectedProduct} toggleSaved={toggleSaved} />} />
           </Routes>
         </div>
       </main>
 
-      <MobileNav activeTab={currentTab} setActiveTab={handleTabChange} cartCount={cartItems.length} />
+      <MobileNav 
+        activeTab={currentTab} 
+        setActiveTab={handleTabChange} 
+        cartCount={cartItems.length} 
+        isDarkMode={isDarkMode}
+        toggleTheme={toggleTheme}
+      />
     </div>
   );
 };
