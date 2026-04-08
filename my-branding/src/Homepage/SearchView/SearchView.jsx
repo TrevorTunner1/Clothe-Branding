@@ -26,13 +26,15 @@ const SearchView = ({ onSelect }) => {
       id: 1, 
       title: "Oversized 'Brut' Tee", 
       price: "$45.00", 
-      img: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=300" 
+      img: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=300",
+      category: "Essentials"
     },
     { 
       id: 2, 
       title: "Infrastructure Hoodie", 
       price: "$85.00", 
-      img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=300" 
+      img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=300",
+      category: "Layering"
     }
   ];
 
@@ -124,14 +126,14 @@ const SearchView = ({ onSelect }) => {
             <div 
               key={product.id} 
               className={styles.productCard}
-              onClick={() => onSelect(product)}
+              onClick={() => onSelect && onSelect(product)}
             >
               <div className={styles.productImage}>
                 <img src={product.img} alt={product.title} />
               </div>
               <div className={styles.productInfo}>
                 <h4>{product.title}</h4>
-                <p>{product.price}</p>
+                <p className={styles.productPrice}>{product.price}</p>
               </div>
             </div>
           ))}

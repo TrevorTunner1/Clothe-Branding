@@ -11,6 +11,7 @@ import ProfileSettings from './ProfileSettings/ProfileSettings';
 import CartView from './CartView/CartView';
 import OrdersView from './OrdersView/OrdersView';
 import SavedView from './SavedView/SavedView';
+import SearchView from './SearchView/SearchView'; // ADD THIS IMPORT
 import styles from './BrutigePlatform.module.css';
 
 const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
@@ -62,7 +63,7 @@ const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
       />
 
       <main className={styles.mainContent}>
-        {!selectedProduct && (
+        {!selectedProduct && currentTab !== 'search' && (  // Hide header on search too
           <HomeHeader 
             activeTab={currentTab} 
             setActiveTab={handleTabChange} 
@@ -84,6 +85,8 @@ const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
                  <MasonryFeed onSelect={setSelectedProduct} savedItems={savedItems} toggleSaved={toggleSaved} addToCart={addToCart} />
                )
             } />
+            
+            <Route path="search" element={<SearchView onSelect={setSelectedProduct} />} />
             
             <Route path="chat" element={<ChatRoom />} />
             
