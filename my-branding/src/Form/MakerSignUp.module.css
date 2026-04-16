@@ -1,0 +1,133 @@
+.mainWrapper {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    background: #fff;
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
+}
+
+/* --- FLOATING ERROR SYSTEM --- */
+.floatingError {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 9999;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid #333;
+}
+
+@keyframes slideUp {
+    from { transform: translate(-50%, 50px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.errorIcon {
+    width: 20px; height: 20px;
+    background: #ff4444;
+    color: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.7rem;
+}
+
+/* --- FORM SECTION --- */
+.formSection {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 60px;
+    background: #ffffff;
+    overflow-y: auto;
+}
+
+.formWrapper { width: 100%; max-width: 420px; margin: auto; }
+
+.logoHeader { display: flex; align-items: center; gap: 15px; margin-bottom: 50px; cursor: pointer; }
+.brandName { font-size: 1.6rem; font-weight: 900; color: #000; letter-spacing: -1px; }
+
+.title { font-size: 3rem; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 10px; }
+.subtitle { color: #666; margin-bottom: 40px; font-size: 1rem; }
+
+/* SOCIAL BUTTONS & APPLE HOVER FIX */
+.socialGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+.socialBtn {
+    background: #fff;
+    border: 1.5px solid #000;
+    padding: 14px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; font-weight: 800; text-transform: uppercase;
+    font-size: 0.75rem; cursor: pointer; transition: 0.3s ease;
+}
+
+.socialBtn img { width: 18px; transition: filter 0.3s; }
+
+.socialBtn:hover { background: #000; color: #fff; }
+
+/* THE SPECIFIC APPLE FIX: Invert black icon to white on hover */
+.socialBtn:hover .appleIcon {
+    filter: invert(1);
+}
+
+/* DIVIDER */
+.divider { display: flex; align-items: center; gap: 20px; margin: 40px 0; }
+.dividerLine { flex: 1; height: 1px; background: #eee; }
+.dividerText { font-size: 0.7rem; font-weight: 900; color: #ccc; }
+
+/* FORM ELEMENTS */
+.form { display: flex; flex-direction: column; gap: 25px; }
+.inputGroup { display: flex; flex-direction: column; gap: 8px; }
+.inputGroup label { font-size: 0.75rem; font-weight: 900; text-transform: uppercase; color: #000; }
+.inputGroup input { padding: 18px; border: 1.5px solid #000; font-size: 1rem; outline: none; background: transparent; }
+
+.submitBtn {
+    background: #000; color: #fff; padding: 20px;
+    border: none; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s ease;
+}
+
+.submitBtn:hover { background: #333; padding-left: 30px; }
+.footerLink { margin-top: 40px; font-size: 0.9rem; color: #888; text-align: center; }
+.footerLink a { color: #000; font-weight: 900; text-decoration: underline; }
+
+/* --- BRAND SECTION --- */
+.brandSection {
+    flex: 1.2;
+    background: #0F0F0F; /* Inkwell */
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+}
+
+.line { position: absolute; height: 1px; background: rgba(255, 255, 255, 0.1); }
+.typewriterBox { width: 85%; z-index: 5; }
+.typewriterText { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 900; color: #fff; line-height: 1.1; letter-spacing: -2px; min-height: 120px; }
+.cursor { font-weight: 200; margin-left: 5px; color: #fff; }
+
+/* --- RESPONSIVE LOGIC --- */
+@media (max-width: 1024px) {
+    .brandSection { flex: 1; }
+    .formSection { padding: 40px; }
+}
+
+@media (max-width: 900px) {
+    .mainWrapper { flex-direction: column; overflow-y: auto; }
+    .brandSection { display: none; } /* Hide typewriter on mobile for focus */
+    .formSection { width: 100%; padding: 40px 20px; height: auto; }
+    .formWrapper { margin: 0 auto; max-width: 100%; }
+    .floatingError { width: 90%; font-size: 0.8rem; bottom: 20px; }
+}
+
+@media (max-width: 480px) {
+    .title { font-size: 2.2rem; }
+    .socialGrid { grid-template-columns: 1fr; }
+}

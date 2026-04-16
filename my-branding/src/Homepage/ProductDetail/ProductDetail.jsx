@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import styles from './ProductDetail.module.css';
 
-const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => {
+const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setActiveTab }) => {
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Matte Black');
   const [activeImg, setActiveImg] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [deadline, setDeadline] = useState('');
+  const [requestNotes, setRequestNotes] = useState('');
 
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
   const colors = [
@@ -15,7 +18,25 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
     { name: 'Paper Bone', hex: '#e1decc' }
   ];
 
-  // Multiple shots of the product
+  // Mock maker data - in real app, comes from product.maker
+  const maker = {
+    name: 'Julian V.',
+    handle: '@julianv_studio',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
+    location: 'Berlin, DE',
+    rating: 4.9,
+    sales: 48,
+    productionDays: 5,
+    shippingDays: 7
+  };
+
+  // Mock other products from same maker
+  const otherProducts = [
+    { id: 2, title: 'Techwear Cargo V2', price: '$145', img: 'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=400' },
+    { id: 3, title: 'Oversized Hoodie', price: '$120', img: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400' },
+    { id: 4, title: 'Structured Cap', price: '$45', img: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400' }
+  ];
+
   const productImages = [
     product.img,
     "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600",
@@ -28,6 +49,22 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
     setTimeout(() => setAddedToCart(false), 2000);
   };
 
+  const handleRequestOrder = () => {
+    // Send request to maker with deadline
+    console.log('Requesting:', { deadline, notes: requestNotes, product });
+    setShowRequestModal(false);
+    alert('Request sent to maker! They will confirm timeline and price.');
+  };
+
+  const calculateDelivery = () => {
+    const today = new Date();
+    const delivery = new Date(today);
+    delivery.setDate(today.getDate() + maker.productionDays + maker.shippingDays);
+    return delivery.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  
+
   return (
     <div className={styles.container}>
       <button onClick={onBack} className={styles.backBtn}>
@@ -38,13 +75,12 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
       </button>
 
       <div className={styles.productLayout}>
-        {/* LEFT SIDE: Image Section (Sticky) */}
+        {/* LEFT SIDE: Image Section */}
         <div className={styles.imageSection}>
           <div className={styles.mainImage}>
             <img src={productImages[activeImg]} alt={product.title} />
           </div>
           
-          {/* NEW: Multi-image thumbnails (AliExpress Style) */}
           <div className={styles.thumbnailGrid}>
             {productImages.map((img, idx) => (
               <div 
@@ -77,7 +113,57 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
 
           <p className={styles.productPrice}>{product.price}</p>
 
-          {/* NEW: Color Selection */}
+          {/* MAKER MINI-PROFILE SECTION */}
+          <div className={styles.makerSection} onClick={() => setActiveTab('profile')}>
+            <div className={styles.makerInfo}>
+              <img src={maker.avatar} alt={maker.name} className={styles.makerAvatar} />
+              <div className={styles.makerMeta}>
+                <div className={styles.makerNameRow}>
+                  <strong>{maker.name}</strong>
+                  <span className={styles.verifiedBadge}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                  </span>
+                </div>
+                <span className={styles.makerHandle}>{maker.handle}</span>
+                <div className={styles.makerStats}>
+                  <span>⭐ {maker.rating}</span>
+                  <span>•</span>
+                  <span>{maker.sales} sales</span>
+                  <span>•</span>
+                  <span>{maker.location}</span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.viewProfileBtn}>View Profile →</div>
+          </div>
+
+          {/* DELIVERY TIMELINE */}
+          <div className={styles.timelineSection}>
+            <div className={styles.timelineHeader}>
+              <h4>Production & Delivery</h4>
+              <span className={styles.deliveryDate}>Est. Delivery: {calculateDelivery()}</span>
+            </div>
+            <div className={styles.timelineBar}>
+              <div className={styles.timelineStep}>
+                <div className={styles.stepDot}></div>
+                <span>Order Placed</span>
+              </div>
+              <div className={styles.timelineLine}></div>
+              <div className={styles.timelineStep}>
+                <div className={styles.stepDot}></div>
+                <span>Production ({maker.productionDays} days)</span>
+              </div>
+              <div className={styles.timelineLine}></div>
+              <div className={styles.timelineStep}>
+                <div className={styles.stepDot}></div>
+                <span>Shipping ({maker.shippingDays} days)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Color Selection */}
           <div className={styles.selectorSection}>
             <h4 className={styles.selectorTitle}>Color: <span>{selectedColor}</span></h4>
             <div className={styles.colorGrid}>
@@ -87,6 +173,7 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
                   className={`${styles.colorCircle} ${selectedColor === color.name ? styles.activeColor : ''}`}
                   style={{ backgroundColor: color.hex }}
                   onClick={() => setSelectedColor(color.name)}
+                  title={color.name}
                 />
               ))}
             </div>
@@ -97,7 +184,7 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
             <div className={styles.specItem}><span className={styles.specLabel}>Composition</span><strong>100% Organic Cotton</strong></div>
             <div className={styles.specItem}><span className={styles.specLabel}>Weight</span><strong>Heavyweight (450 GSM)</strong></div>
             <div className={styles.specItem}><span className={styles.specLabel}>Origin</span><strong>Brutige Atelier</strong></div>
-            <div className={styles.specItem}><span className={styles.specLabel}>Turnaround</span><strong>14 Working Days</strong></div>
+            <div className={styles.specItem}><span className={styles.specLabel}>Turnaround</span><strong>{maker.productionDays} Working Days</strong></div>
           </div>
 
           {/* Size Selection */}
@@ -129,9 +216,10 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
                 </div>
             </div>
 
-            {/* NEW: Message Maker Button */}
-            <button className={styles.messageBtn}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/></svg>
+            <button className={styles.messageBtn} onClick={() => setActiveTab('chat')}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/>
+              </svg>
               Message Maker
             </button>
           </div>
@@ -144,24 +232,95 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => 
             >
               {addedToCart ? "Added to Loop" : "Add to Cart"}
             </button>
-            <button className={styles.brandBtn}>
-              Brand This Item
+            
+            {/* Custom Request Button for Made-to-Order */}
+            <button 
+              className={styles.requestBtn}
+              onClick={() => setShowRequestModal(true)}
+            >
+              Request Custom Order
             </button>
           </div>
 
           {/* Features */}
           <div className={styles.features}>
             <div className={styles.feature}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              </svg>
               <div><strong>Infrastructure Shipping</strong><p>Global fulfillment included</p></div>
             </div>
             <div className={styles.feature}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
               <div><strong>Verified Maker</strong><p>Quality checked by Brutige Studio</p></div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* OTHER PRODUCTS FROM THIS MAKER */}
+      <div className={styles.otherProductsSection}>
+        <div className={styles.sectionHeader}>
+          <h3>More from {maker.name}</h3>
+          <button className={styles.viewAllBtn} onClick={() => setActiveTab('profile')}>
+            View Full Catalog →
+          </button>
+        </div>
+        <div className={styles.otherProductsGrid}>
+          {otherProducts.map(item => (
+            <div key={item.id} className={styles.otherProductCard}>
+              <div className={styles.otherProductImage}>
+                <img src={item.img} alt={item.title} />
+              </div>
+              <div className={styles.otherProductInfo}>
+                <h4>{item.title}</h4>
+                <span>{item.price}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CUSTOM REQUEST MODAL */}
+      {showRequestModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowRequestModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <h3>Request Custom Order</h3>
+            <p>Need this customized? Tell {maker.name} your requirements.</p>
+            
+            <div className={styles.formGroup}>
+              <label>When do you need this by?</label>
+              <input 
+                type="date" 
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            
+            <div className={styles.formGroup}>
+              <label>Customization Notes</label>
+              <textarea 
+                rows="4"
+                placeholder="Size, color changes, custom measurements, etc..."
+                value={requestNotes}
+                onChange={(e) => setRequestNotes(e.target.value)}
+              />
+            </div>
+            
+            <div className={styles.modalActions}>
+              <button className={styles.btnSecondary} onClick={() => setShowRequestModal(false)}>
+                Cancel
+              </button>
+              <button className={styles.btnPrimary} onClick={handleRequestOrder}>
+                Send Request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

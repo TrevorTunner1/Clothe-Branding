@@ -1,26 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from './MobileNav.module.css';
+import styles from './StudioMobileNav.module.css';
 
-const MobileNav = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
+const StudioMobileNav = ({ activeTab, setActiveTab, goToPlatform, isDarkMode, toggleTheme }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const primaryNav = [
     { 
-      id: 'shop', 
-      label: 'Feed',
-      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> 
+      id: 'add-product', 
+      label: 'Create',
+      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
     },
     { 
-      id: 'chat', 
-      label: 'Messages',
-      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/></svg> 
+      id: 'products', 
+      label: 'Products',
+      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+        <line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
     },
     { 
-      id: 'search', 
-      label: 'Search',
-      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> 
+      id: 'overview', 
+      label: 'Overview',
+      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <line x1="3" y1="9" x2="21" y2="9"/>
+        <line x1="9" y1="21" x2="9" y2="9"/>
+      </svg>
+    },
+    { 
+      id: 'orders', 
+      label: 'Orders',
+      icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="1" y="3" width="22" height="18" rx="2" ry="2"/>
+        <line x1="3" y1="9" x2="21" y2="9"/>
+        <line x1="9" y1="21" x2="9" y2="9"/>
+      </svg>
     }
   ];
 
@@ -38,13 +58,7 @@ const MobileNav = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
 
   const handleTabClick = (id) => {
     setActiveTab(id);
-    navigate(`/platform/${id}`);
-    setIsMenuOpen(false);
-  };
-
-  // Navigate to Studio (standalone page)
-  const goToStudio = () => {
-    navigate('/studio');
+    navigate(`/studio/${id}`);
     setIsMenuOpen(false);
   };
 
@@ -56,33 +70,34 @@ const MobileNav = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
            <div className={styles.dragBar} onClick={() => setIsMenuOpen(false)} />
         </div>
         <div className={styles.sheetContent}>
-          {/* GEAR ICON - Now goes to Settings instead of Profile */}
+          <button onClick={() => handleTabClick('messages')} className={styles.sheetBtn}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/>
+            </svg> 
+            Messages
+          </button>
+          
+          <button onClick={() => handleTabClick('transactions')} className={styles.sheetBtn}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg> 
+            Sales & Transactions
+          </button>
+          
           <button onClick={() => handleTabClick('settings')} className={styles.sheetBtn}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
             </svg> 
-            Settings
+            Studio Settings
           </button>
           
-          <button onClick={() => handleTabClick('saved')} className={styles.sheetBtn}>
+          <button onClick={goToPlatform} className={styles.sheetBtn}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg> 
-            Saved Blueprints
-          </button>
-          
-          <button onClick={() => handleTabClick('orders')} className={styles.sheetBtn}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="1" y="3" width="22" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
-            </svg> 
-            Branding Orders
-          </button>
-          
-          <button onClick={() => handleTabClick('cart')} className={styles.sheetBtn}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M16 10a4 4 0 0 1-8 0"/>
-            </svg> 
-            My Cart
+            Exit Studio
           </button>
           
           <button 
@@ -118,17 +133,6 @@ const MobileNav = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
             </button>
           ))}
           
-          {/* Studio Button - Navigates to standalone /studio page */}
-          <button 
-            className={styles.navBtn}
-            onClick={goToStudio}
-            aria-label="Maker Studio"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/>
-            </svg>
-          </button>
-          
           {/* THE "MORE" MENU TRIGGER */}
           <button 
             onClick={() => setIsMenuOpen(true)} 
@@ -137,7 +141,9 @@ const MobileNav = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
             aria-expanded={isMenuOpen}
           >
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+                <circle cx="12" cy="12" r="1"/>
+                <circle cx="19" cy="12" r="1"/>
+                <circle cx="5" cy="12" r="1"/>
              </svg>
           </button>
         </div>
@@ -146,4 +152,4 @@ const MobileNav = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
   );
 };
 
-export default MobileNav;
+export default StudioMobileNav;

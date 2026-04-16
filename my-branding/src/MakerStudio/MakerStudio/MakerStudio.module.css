@@ -1,0 +1,63 @@
+:root {
+  --brut-bg: #f5f5f5;
+  --brut-card: #ffffff;
+  --brut-text: #1a1a1a;
+  --brut-border: #e0e0e0;
+  --brut-accent: #1a1a1a;
+  --brut-white: #ffffff;
+  --brut-hover: #f0f0f0;
+  --brut-success: #22c55e;
+  --brut-danger: #ef4444;
+  --brut-warning: #f59e0b;
+}
+
+[data-theme="dark"] {
+  --brut-bg: #0a0a0a;
+  --brut-card: #1a1a1a;
+  --brut-text: #f5f5f5;
+  --brut-border: #333333;
+  --brut-accent: #f5f5f5;
+  --brut-white: #1a1a1a;
+  --brut-hover: #2a2a2a;
+}
+
+.studioWrapper {
+  display: flex;
+  min-height: 100vh;
+  background: var(--brut-bg);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.mainContent {
+  flex: 1;
+  margin-left: 80px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.viewport {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .mainContent {
+    margin-left: 0;
+    margin-bottom: 80px;
+  }
+  
+  .viewport {
+    padding: 16px;
+    padding-bottom: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .viewport {
+    padding: 12px;
+    padding-bottom: 100px;
+  }
+}

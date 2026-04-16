@@ -5,42 +5,47 @@ import MobileNav from './MobileNav/MobileNav';
 import HomeHeader from './HomeHeader/HomeHeader';
 import MasonryFeed from './HomeFeed/MasonryFeed';
 import ProductDetail from './ProductDetail/ProductDetail';
-import MakerStudio from './MakerStudio/MakerStudio';
 import ChatRoom from './ChatRoom/ChatRoom';
+import ProfileView from './ProfileView/ProfileView';
 import ProfileSettings from './ProfileSettings/ProfileSettings';
 import CartView from './CartView/CartView';
 import OrdersView from './OrdersView/OrdersView';
 import SavedView from './SavedView/SavedView';
-import SearchView from './SearchView/SearchView'; // ADD THIS IMPORT
+import SearchView from './SearchView/SearchView';
 import styles from './BrutigePlatform.module.css';
 
 const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // High-end route detection
   const pathSegments = location.pathname.split('/');
   const currentTab = pathSegments[2] || 'shop';
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [savedItems, setSavedItems] = useState([]);
+  const [userAvatar, setUserAvatar] = useState(null);
 
-  // Navigation logic with auto-reset for product detail
+  // Load avatar from localStorage on mount
+  useEffect(() => {
+    const savedAvatar = localStorage.getItem('brut_avatar');
+    if (savedAvatar) setUserAvatar(savedAvatar);
+  }, []);
+
+  // Save avatar to localStorage when it changes
+  useEffect(() => {
+    if (userAvatar) localStorage.setItem('brut_avatar', userAvatar);
+  }, [userAvatar]);
+
   const handleTabChange = (tabId) => {
     setSelectedProduct(null);
     navigate(`/platform/${tabId}`);
   };
 
-  // State Persistance
-  useEffect(() => {
-    const saved = localStorage.getItem('brut_saved');
-    if (saved) setSavedItems(JSON.parse(saved));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('brut_saved', JSON.stringify(savedItems));
-  }, [savedItems]);
+  // Navigate to Studio (now a separate page)
+  const goToStudio = () => {
+    navigate('/studio');  // Changed from /platform/studio to /studio
+  };
 
   const addToCart = (product, quantity = 1, size = 'M') => {
     setCartItems(prev => [...prev, { ...product, quantity, size }]);
@@ -57,17 +62,19 @@ const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
     <div className={styles.platformWrapper}>
       <Sidebar 
         activeTab={currentTab} 
-        setActiveTab={handleTabChange} 
+        setActiveTab={handleTabChange}
+        goToStudio={goToStudio}  // Pass studio navigation handler
         isDarkMode={isDarkMode} 
         toggleTheme={toggleTheme} 
       />
 
       <main className={styles.mainContent}>
-        {!selectedProduct && currentTab !== 'search' && (  // Hide header on search too
+        {!selectedProduct && currentTab !== 'search' && (
           <HomeHeader 
             activeTab={currentTab} 
             setActiveTab={handleTabChange} 
-            cartCount={cartItems.length} 
+            cartCount={cartItems.length}
+            userAvatar={userAvatar}
           />
         )}
         
@@ -78,33 +85,66 @@ const BrutigePlatform = ({ isDarkMode, toggleTheme }) => {
             <Route path="shop" element={
                selectedProduct ? (
                  <ProductDetail 
-                    product={selectedProduct} onBack={() => setSelectedProduct(null)} 
-                    addToCart={addToCart} isSaved={savedItems.some(i => i.id === selectedProduct.id)} toggleSaved={() => toggleSaved(selectedProduct)}
+                    product={selectedProduct} 
+                    onBack={() => setSelectedProduct(null)} 
+                    addToCart={addToCart} 
+                    isSaved={savedItems.some(i => i.id === selectedProduct.id)} 
+                    toggleSaved={() => toggleSaved(selectedProduct)}
                  />
                ) : (
-                 <MasonryFeed onSelect={setSelectedProduct} savedItems={savedItems} toggleSaved={toggleSaved} addToCart={addToCart} />
+                 <MasonryFeed 
+                   onSelect={setSelectedProduct} 
+                   savedItems={savedItems} 
+                   toggleSaved={toggleSaved} 
+                   addToCart={addToCart} 
+                 />
                )
             } />
             
             <Route path="search" element={<SearchView onSelect={setSelectedProduct} />} />
-            
             <Route path="chat" element={<ChatRoom />} />
+            {/* REMOVED: studio route is now at top level in App.js */}
             
-            {/* NESTED MAKER ROUTES: studio/* enables /platform/studio/queue */}
-            <Route path="studio/*" element={<MakerStudio />} />
+            {/* Profile - Public view with products grid */}
+            <Route 
+              path="profile" 
+              element={
+                <ProfileView 
+                  setActiveTab={handleTabChange} 
+                  userAvatar={userAvatar}
+                  setUserAvatar={setUserAvatar}
+                />
+              } 
+            />
             
-            <Route path="profile" element={<ProfileSettings />} />
-            <Route path="settings" element={<ProfileSettings />} />
+            {/* Settings - Private configuration */}
+            <Route 
+              path="settings" 
+              element={
+                <ProfileSettings 
+                  userAvatar={userAvatar}
+                  setUserAvatar={setUserAvatar}
+                />
+              } 
+            />
+            
             <Route path="cart" element={<CartView cartItems={cartItems} />} />
             <Route path="orders" element={<OrdersView />} />
-            <Route path="saved" element={<SavedView savedItems={savedItems} onSelect={setSelectedProduct} toggleSaved={toggleSaved} />} />
+            <Route path="saved" element={
+              <SavedView 
+                savedItems={savedItems} 
+                onSelect={setSelectedProduct} 
+                toggleSaved={toggleSaved} 
+              />
+            } />
           </Routes>
         </div>
       </main>
 
       <MobileNav 
         activeTab={currentTab} 
-        setActiveTab={handleTabChange} 
+        setActiveTab={handleTabChange}
+        goToStudio={goToStudio}  // Pass studio navigation handler
         cartCount={cartItems.length} 
         isDarkMode={isDarkMode}
         toggleTheme={toggleTheme}

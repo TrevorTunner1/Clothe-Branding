@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
+  const navigate = useNavigate();
+
   const navItems = [
     { 
       id: 'shop', 
@@ -17,13 +20,13 @@ const Sidebar = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
       id: 'chat', 
       label: 'Messages', 
       icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/></svg> 
-    },
-    { 
-      id: 'studio', 
-      label: 'Maker Studio', 
-      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> 
     }
   ];
+
+  // Navigate to Studio (standalone page)
+  const goToStudio = () => {
+    navigate('/studio');
+  };
 
   return (
     <aside className={styles.sidebar}>
@@ -46,6 +49,17 @@ const Sidebar = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
             {item.icon}
           </button>
         ))}
+        
+        {/* Studio Button - Navigates to standalone /studio page */}
+        <button 
+          className={styles.navBtn}
+          onClick={goToStudio}
+          aria-label="Maker Studio"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </button>
       </nav>
 
       <div className={styles.bottomStack}>
@@ -57,10 +71,10 @@ const Sidebar = ({ activeTab, setActiveTab, isDarkMode, toggleTheme }) => {
           )}
         </button>
 
-        {/* GEAR ICON for Settings/Profile */}
+        {/* GEAR ICON - Now goes to Settings instead of Profile */}
         <button 
-          className={`${styles.settingsBtn} ${activeTab === 'profile' ? styles.active : ''}`}
-          onClick={() => setActiveTab('profile')}
+          className={`${styles.settingsBtn} ${activeTab === 'settings' ? styles.active : ''}`}
+          onClick={() => setActiveTab('settings')}
           aria-label="Settings"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

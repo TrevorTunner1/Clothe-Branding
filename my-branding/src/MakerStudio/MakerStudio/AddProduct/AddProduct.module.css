@@ -1,0 +1,602 @@
+/* Add Product - Brutige Studio */
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Success Toast */
+.successToast {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  background: var(--brut-success);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  box-shadow: 0 10px 40px rgba(34, 197, 94, 0.3);
+  animation: slideIn 0.3s ease;
+  z-index: 1000;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Form Layout */
+.form {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 24px;
+  align-items: start;
+}
+
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Section Styles */
+.section {
+  background: var(--brut-card);
+  border: 1px solid var(--brut-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--brut-text);
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sectionDesc {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Image Grid */
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.imageCard {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--brut-border);
+  background: var(--brut-hover);
+}
+
+.imageCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.coverImage {
+  border-color: var(--brut-text);
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.coverBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--brut-text);
+  color: var(--brut-bg);
+  font-size: 0.6rem;
+  font-weight: 900;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.removeBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--brut-danger);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.imageCard:hover .removeBtn,
+.colorImageCard:hover .removeBtn {
+  opacity: 1;
+}
+
+.uploadCard {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 2px dashed var(--brut-border);
+  background: transparent;
+  color: var(--brut-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  min-height: 120px;
+}
+
+.uploadCard:hover {
+  opacity: 1;
+  border-color: var(--brut-text);
+  background: var(--brut-hover);
+}
+
+.uploadCard span {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* Add Button */
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--brut-text);
+  color: var(--brut-bg);
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.addBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 var(--brut-border);
+}
+
+/* Color Variants */
+.colorTabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.colorTab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--brut-hover);
+  border: 2px solid transparent;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.colorTab:hover {
+  border-color: var(--brut-border);
+}
+
+.activeTab {
+  border-color: var(--brut-text);
+  background: var(--brut-card);
+}
+
+.colorDot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--brut-border);
+  flex-shrink: 0;
+}
+
+.colorName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brut-text);
+}
+
+.removeColor {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--brut-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.removeColor:hover {
+  opacity: 1;
+  background: var(--brut-danger);
+  color: white;
+}
+
+/* Color Editor */
+.colorEditor {
+  padding: 20px;
+  background: var(--brut-hover);
+  border-radius: 12px;
+}
+
+.colorInputs {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.colorInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.colorInputWrapper input[type="color"] {
+  width: 50px;
+  height: 40px;
+  border: 1px solid var(--brut-border);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+}
+
+.colorInputWrapper span {
+  font-size: 0.85rem;
+  font-family: monospace;
+  color: #666;
+}
+
+/* Color Images */
+.colorImagesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 8px;
+}
+
+.colorImageCard {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--brut-border);
+}
+
+.colorImageCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.uploadCardSmall {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 2px dashed var(--brut-border);
+  background: transparent;
+  color: var(--brut-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.uploadCardSmall:hover {
+  opacity: 1;
+  border-color: var(--brut-text);
+}
+
+/* Form Inputs */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fullWidth {
+  grid-column: span 2;
+}
+
+.inputGroup label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--brut-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inputGroup input,
+.inputGroup textarea,
+.inputGroup select {
+  padding: 12px 16px;
+  border: 1px solid var(--brut-border);
+  border-radius: 10px;
+  background: var(--brut-bg);
+  color: var(--brut-text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.inputGroup input:focus,
+.inputGroup textarea:focus,
+.inputGroup select:focus {
+  outline: none;
+  border-color: var(--brut-text);
+}
+
+.inputGroup textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.priceInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 0 0 16px;
+  border: 1px solid var(--brut-border);
+  border-radius: 10px;
+  background: var(--brut-bg);
+}
+
+.priceInput span {
+  font-weight: 700;
+  color: var(--brut-text);
+}
+
+.priceInput input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 16px 12px 0;
+}
+
+.priceInput input:focus {
+  outline: none;
+}
+
+/* Sizes */
+.sizesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sizeBtn {
+  min-width: 50px;
+  padding: 12px 16px;
+  border: 1px solid var(--brut-border);
+  border-radius: 10px;
+  background: var(--brut-bg);
+  color: var(--brut-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sizeBtn:hover {
+  border-color: var(--brut-text);
+}
+
+.sizeBtn.selected {
+  background: var(--brut-text);
+  color: var(--brut-bg);
+  border-color: var(--brut-text);
+}
+
+/* Submit Button */
+.submitBtn {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--brut-text);
+  color: var(--brut-bg);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.submitBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 var(--brut-border);
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive - Large Tablet */
+@media (max-width: 1200px) {
+  .form {
+    grid-template-columns: 1fr 380px;
+  }
+}
+
+/* Responsive - Tablet */
+@media (max-width: 1024px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+  
+  .rightColumn {
+    order: -1;
+  }
+  
+  .imageGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+  .section {
+    padding: 16px;
+  }
+  
+  .imageGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .coverImage {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+  
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .fullWidth {
+    grid-column: span 1;
+  }
+  
+  .colorInputs {
+    grid-template-columns: 1fr;
+  }
+  
+  .sectionHeader {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .successToast {
+    left: 16px;
+    right: 16px;
+    top: 80px;
+  }
+  
+  .colorImagesGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Responsive - Small Mobile */
+@media (max-width: 480px) {
+  .imageGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .colorTabs {
+    gap: 6px;
+  }
+  
+  .colorTab {
+    padding: 8px 12px;
+  }
+  
+  .colorName {
+    font-size: 0.75rem;
+  }
+  
+  .sizesGrid {
+    gap: 8px;
+  }
+  
+  .sizeBtn {
+    min-width: 44px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .colorImagesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .uploadCard {
+    min-height: 100px;
+  }
+}
+
+@media (max-width: 360px) {
+  .colorImagesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

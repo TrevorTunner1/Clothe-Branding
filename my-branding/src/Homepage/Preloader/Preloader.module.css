@@ -1,0 +1,18 @@
+.preloader {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.content { text-align: center; }
+.status {
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 4px;
+    margin-top: 25px;
+    font-family: 'Outfit', sans-serif;
+}

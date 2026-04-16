@@ -16,7 +16,7 @@ const BrutigeLogo = ({ color = "black" }) => (
   </svg>
 );
 
-const SignInPage = () => {
+const SignInPage = ({ notify }) => {
   const container = useRef();
   const textRef = useRef();
   const cursorRef = useRef();
@@ -35,11 +35,16 @@ const SignInPage = () => {
   ];
 
   useGSAP(() => {
+    // 1. Entrance Animation
     gsap.from(`.${styles.formWrapper} > *`, { opacity: 0, y: 30, stagger: 0.1, duration: 1, ease: "expo.out" });
+    
+    // 2. Background Lines
     const lines = gsap.utils.toArray(`.${styles.line}`);
     lines.forEach((line, i) => {
       gsap.to(line, { x: i % 2 === 0 ? 100 : -100, opacity: 0.3, duration: 10 + i, repeat: -1, yoyo: true, ease: "sine.inOut" });
     });
+
+    // 3. Typewriter
     let masterTl = gsap.timeline({ repeat: -1 });
     phrases.forEach((phrase) => {
       let tl = gsap.timeline({ repeat: 1, yoyo: true, repeatDelay: 2 });
@@ -49,13 +54,19 @@ const SignInPage = () => {
     gsap.to(cursorRef.current, { opacity: 0, ease: "power2.inOut", repeat: -1 });
   }, { scope: container });
 
-const handleLogin = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    if (!validateEmail(email)) return alert("Invalid email.");
-    if (password.length < 6) return alert("Password must be 6+ characters.");
+    if (!validateEmail(email)) {
+      notify("Authentication failed. Invalid email format.", "error");
+      return;
+    }
+    if (password.length < 6) {
+      notify("Security requirement. Password too short.", "error");
+      return;
+    }
     
-    // REDIRECT TO PLATFORM
-    navigate("/platform/shop"); 
+    notify("Identity verified. Entering platform...", "success");
+    setTimeout(() => navigate("/platform/shop"), 1500);
   };
 
   return (
@@ -66,13 +77,23 @@ const handleLogin = (e) => {
             <BrutigeLogo color="black" />
             <span className={styles.brandName}>brutige</span>
           </div>
+
           <h1 className={styles.title}>Secure Access</h1>
           <p className={styles.subtitle}>Sign in to your branding infrastructure.</p>
+
           <div className={styles.socialGrid}>
-            <button className={styles.socialBtn}><img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="" />Google</button>
-            <button className={styles.socialBtn}><img src="https://www.svgrepo.com/show/511330/apple-173.svg" alt="" />Apple</button>
+            <button type="button" className={styles.socialBtn}>
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="" />
+              <span>Google</span>
+            </button>
+            <button type="button" className={styles.socialBtn}>
+              <img src="https://www.svgrepo.com/show/511330/apple-173.svg" className={styles.appleIcon} alt="" />
+              <span>Apple</span>
+            </button>
           </div>
+
           <div className={styles.divider}><span className={styles.dividerLine}></span><span className={styles.dividerText}>OR</span><span className={styles.dividerLine}></span></div>
+
           <form className={styles.form} onSubmit={handleLogin}>
             <div className={styles.inputGroup}>
               <label>Professional Email</label>
@@ -84,15 +105,28 @@ const handleLogin = (e) => {
             </div>
             <button type="submit" className={styles.submitBtn}>Continue &rarr;</button>
           </form>
-          <p className={styles.footerLink}>New here? <Link to="/signup">Request Access</Link></p>
+
+          {/* ADDED MAKER LINK IN FOOTER */}
+          <div className={styles.authFooter}>
+            <p className={styles.footerLink}>New here? <Link to="/signup">Request Access</Link></p>
+            <p className={styles.footerLink}>Artisan? <Link to="/maker-signup">Join as a Maker</Link></p>
+            <p className={styles.footerLink}><Link to="/forgot-password" style={{opacity: 0.5}}>Forgotten credentials?</Link></p>
+          </div>
         </div>
       </div>
+
       <div className={styles.brandSection}>
         <div className={styles.line} style={{top: '20%', left: '10%', width: '300px'}} />
         <div className={styles.line} style={{top: '50%', right: '10%', width: '400px'}} />
-        <div className={styles.typewriterBox}><h2 className={styles.typewriterText}><span ref={textRef}></span><span ref={cursorRef} className={styles.cursor}>|</span></h2></div>
+        <div className={styles.typewriterBox}>
+          <h2 className={styles.typewriterText}>
+            <span ref={textRef}></span>
+            <span ref={cursorRef} className={styles.cursor}>|</span>
+          </h2>
+        </div>
       </div>
     </div>
   );
 };
+
 export default SignInPage;
