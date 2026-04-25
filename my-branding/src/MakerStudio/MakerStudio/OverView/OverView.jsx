@@ -1,85 +1,234 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './OverView.module.css';
 
-const OverView = () => {
-  const stats = [
-    { label: 'Total Sales', value: '$12,450', change: '+23%', positive: true },
-    { label: 'Orders', value: '156', change: '+12%', positive: true },
-    { label: 'Products', value: '24', change: '+3', positive: true },
-    { label: 'Views', value: '8.2K', change: '-5%', positive: false },
+const OverView = ({ overview, products, orders, loading }) => {
+  const navigate = useNavigate();
+  const [activePeriod, setActivePeriod] = useState('7d');
+
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading...</div>
+      </div>
+    );
+  }
+
+  // Mock data for the chart
+  const chartData = [
+    { day: 'Mon', value: 4200 },
+    { day: 'Tue', value: 3800 },
+    { day: 'Wed', value: 5100 },
+    { day: 'Thu', value: 4700 },
+    { day: 'Fri', value: 6200 },
+    { day: 'Sat', value: 7800 },
+    { day: 'Sun', value: 5400 },
   ];
 
-  const recentOrders = [
-    { id: '#ORD-001', customer: 'John Doe', product: '450GSM Heavyweight Tee', amount: 89, status: 'completed' },
-    { id: '#ORD-002', customer: 'Jane Smith', product: 'Techwear Cargo Pants', amount: 145, status: 'processing' },
-    { id: '#ORD-003', customer: 'Mike Johnson', product: 'Oversized Hoodie', amount: 120, status: 'pending' },
+  const maxValue = Math.max(...chartData.map(d => d.value));
+
+  const stats = [
+    { 
+      label: 'Total Revenue', 
+      value: `$${(overview?.revenue || 0).toLocaleString()}`, 
+      change: '+23%',
+      positive: true,
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      )
+    },
+    { 
+      label: 'Total Orders', 
+      value: overview?.totalOrders || 0, 
+      change: '+12%',
+      positive: true,
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="1" y="3" width="22" height="18" rx="2" ry="2"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="9" y1="21" x2="9" y2="9"/>
+        </svg>
+      )
+    },
+    { 
+      label: 'Products', 
+      value: overview?.totalProducts || 0, 
+      change: '+3',
+      positive: true,
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        </svg>
+      )
+    },
+    { 
+      label: 'Total Views', 
+      value: `${((overview?.totalViews || 0) / 1000).toFixed(1)}K`, 
+      change: '-5%',
+      positive: false,
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      )
+    },
   ];
+
+  const recentOrders = overview?.recentOrders || [];
 
   return (
     <div className={styles.container}>
+      {/* Header with Profile */}
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <h2>Dashboard</h2>
+          <p>Welcome back! Here's what's happening with your store.</p>
+        </div>
+        <div className={styles.headerRight}>
+          <div className={styles.profileSection}>
+            <div className={styles.profileInfo}>
+              <span className={styles.profileName}>Aura Studio</span>
+              <span className={styles.profileEmail}>hello@aurastudio.com</span>
+            </div>
+            <div className={styles.profileAvatar}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Stats Grid */}
       <div className={styles.statsGrid}>
         {stats.map((stat, idx) => (
           <div key={idx} className={styles.statCard}>
-            <span className={styles.statLabel}>{stat.label}</span>
-            <div className={styles.statValue}>
-              <span className={styles.value}>{stat.value}</span>
+            <div className={styles.statHeader}>
+              <span className={styles.statIcon}>{stat.icon}</span>
               <span className={`${styles.change} ${stat.positive ? styles.positive : styles.negative}`}>
                 {stat.change}
               </span>
             </div>
+            <div className={styles.statValue}>{stat.value}</div>
+            <div className={styles.statLabel}>{stat.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Recent Orders */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h3>Recent Orders</h3>
-          <button className={styles.viewAll}>View All</button>
+      {/* Chart Section */}
+      <div className={styles.chartSection}>
+        <div className={styles.chartHeader}>
+          <div>
+            <h3>Revenue Overview</h3>
+            <p>Your revenue for the past 7 days</p>
+          </div>
+          <div className={styles.periodToggle}>
+            {['24h', '7d', '30d', '90d'].map(period => (
+              <button
+                key={period}
+                className={`${styles.periodBtn} ${activePeriod === period ? styles.active : ''}`}
+                onClick={() => setActivePeriod(period)}
+              >
+                {period}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className={styles.ordersList}>
-          {recentOrders.map(order => (
-            <div key={order.id} className={styles.orderRow}>
-              <div className={styles.orderInfo}>
-                <span className={styles.orderId}>{order.id}</span>
-                <span className={styles.customer}>{order.customer}</span>
+        <div className={styles.chart}>
+          <div className={styles.chartBars}>
+            {chartData.map((item, idx) => (
+              <div key={idx} className={styles.barContainer}>
+                <div 
+                  className={styles.bar} 
+                  style={{ height: `${(item.value / maxValue) * 100}%` }}
+                >
+                  <span className={styles.barValue}>${item.value.toLocaleString()}</span>
+                </div>
+                <span className={styles.barLabel}>{item.day}</span>
               </div>
-              <span className={styles.product}>{order.product}</span>
-              <span className={styles.amount}>${order.amount}</span>
-              <span className={`${styles.orderStatus} ${styles[order.status]}`}>
-                {order.status}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className={styles.section}>
-        <h3>Quick Actions</h3>
-        <div className={styles.quickActions}>
-          <button className={styles.quickBtn}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Add Product
-          </button>
-          <button className={styles.quickBtn}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="1" y="3" width="22" height="18" rx="2" ry="2"/>
-              <line x1="3" y1="9" x2="21" y2="9"/>
-              <line x1="9" y1="21" x2="9" y2="9"/>
-            </svg>
-            View Orders
-          </button>
-          <button className={styles.quickBtn}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/>
-            </svg>
-            Messages
-          </button>
+      {/* Two Column Layout */}
+      <div className={styles.twoColumn}>
+        {/* Recent Orders */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h3>Recent Orders</h3>
+            <button className={styles.viewAll} onClick={() => navigate('/studio/orders')}>
+              View All
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+          <div className={styles.ordersList}>
+            {recentOrders.map(order => (
+              <div key={order.id} className={styles.orderRow}>
+                <div className={styles.orderInfo}>
+                  <span className={styles.orderId}>{order.id}</span>
+                  <span className={styles.customer}>{order.customer}</span>
+                </div>
+                <span className={styles.product}>{order.product}</span>
+                <span className={styles.amount}>${order.amount}</span>
+                <span className={`${styles.orderStatus} ${styles[order.status]}`}>
+                  {order.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h3>Quick Actions</h3>
+          </div>
+          <div className={styles.quickActions}>
+            <button className={styles.quickBtn} onClick={() => navigate('/studio/add-product')}>
+              <div className={styles.quickIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </div>
+              <span>Add Product</span>
+            </button>
+            <button className={styles.quickBtn} onClick={() => navigate('/studio/orders')}>
+              <div className={styles.quickIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="1" y="3" width="22" height="18" rx="2" ry="2"/>
+                  <line x1="3" y1="9" x2="21" y2="9"/>
+                </svg>
+              </div>
+              <span>Orders</span>
+            </button>
+            <button className={styles.quickBtn} onClick={() => navigate('/studio/messages')}>
+              <div className={styles.quickIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/>
+                </svg>
+              </div>
+              <span>Messages</span>
+              <span className={styles.msgBadge}>2</span>
+            </button>
+            <button className={styles.quickBtn} onClick={() => navigate('/studio/transactions')}>
+              <div className={styles.quickIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="1" x2="12" y2="23"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <span>Sales</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

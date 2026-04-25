@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './MasonryFeed.module.css';
+import PromoBanner from '../PromoBanner/PromoBanner';
 
 const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -26,7 +27,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 5,
       totalCapacity: 20,
       brandsBuilt: 89,
-      img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500" 
+      img: " https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500" 
     },
     { 
       id: 3, 
@@ -37,7 +38,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 2,
       totalCapacity: 10,
       brandsBuilt: 12,
-      img: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=500" 
+      img: " https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=500" 
     },
     { 
       id: 4, 
@@ -48,7 +49,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 18,
       totalCapacity: 40,
       brandsBuilt: 45,
-      img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500" 
+      img: " https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500" 
     },
     { 
       id: 5, 
@@ -59,7 +60,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 30,
       totalCapacity: 100,
       brandsBuilt: 210,
-      img: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500" 
+      img: " https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500" 
     },
     { 
       id: 6, 
@@ -70,7 +71,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 8,
       totalCapacity: 15,
       brandsBuilt: 34,
-      img: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500" 
+      img: " https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500" 
     },
     { 
       id: 7, 
@@ -81,7 +82,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 15,
       totalCapacity: 60,
       brandsBuilt: 156,
-      img: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500" 
+      img: " https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500" 
     },
     { 
       id: 8, 
@@ -92,7 +93,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 40,
       totalCapacity: 200,
       brandsBuilt: 432,
-      img: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500" 
+      img: " https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500" 
     },
     { 
       id: 9, 
@@ -103,7 +104,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 10,
       totalCapacity: 30,
       brandsBuilt: 18,
-      img: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500" 
+      img: " https://images.unsplash.com/photo-1542272604-787c3835535d?w=500" 
     },
     { 
       id: 10, 
@@ -114,7 +115,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 3,
       totalCapacity: 5,
       brandsBuilt: 7,
-      img: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500" 
+      img: " https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500" 
     },
     { 
       id: 11, 
@@ -125,7 +126,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 14,
       totalCapacity: 25,
       brandsBuilt: 55,
-      img: "https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?w=500" 
+      img: " https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?w=500" 
     },
     { 
       id: 12, 
@@ -136,7 +137,7 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
       stock: 50,
       totalCapacity: 500,
       brandsBuilt: 1024,
-      img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" 
+      img: " https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" 
     },
   ];
 
@@ -164,6 +165,9 @@ const MasonryFeed = ({ onSelect, savedItems = [], toggleSaved, addToCart }) => {
           Global infrastructure for independent makers. Real-time atelier stock.
         </p>
       </div>
+
+      {/* Integrated PromoBanner Component */}
+      <PromoBanner />
 
       <div className={styles.masonry}>
         {products.map(product => {
