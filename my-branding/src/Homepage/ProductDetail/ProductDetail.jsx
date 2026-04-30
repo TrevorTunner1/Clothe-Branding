@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './ProductDetail.module.css';
 
-const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setActiveTab }) => {
+const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved }) => {
+  const navigate = useNavigate();
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Matte Black');
   const [activeImg, setActiveImg] = useState(0);
@@ -18,8 +20,9 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
     { name: 'Paper Bone', hex: '#e1decc' }
   ];
 
-  // Mock maker data - in real app, comes from product.maker
+  // Mock maker data
   const maker = {
+    id: 'julian-v-studio', 
     name: 'Julian V.',
     handle: '@julianv_studio',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
@@ -30,7 +33,6 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
     shippingDays: 7
   };
 
-  // Mock other products from same maker
   const otherProducts = [
     { id: 2, title: 'Techwear Cargo V2', price: '$145', img: 'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=400' },
     { id: 3, title: 'Oversized Hoodie', price: '$120', img: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400' },
@@ -50,7 +52,6 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
   };
 
   const handleRequestOrder = () => {
-    // Send request to maker with deadline
     console.log('Requesting:', { deadline, notes: requestNotes, product });
     setShowRequestModal(false);
     alert('Request sent to maker! They will confirm timeline and price.');
@@ -63,7 +64,11 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
     return delivery.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
-  
+  const handleViewProfile = (e) => {
+    e?.stopPropagation();
+    // Navigate to the specific maker profile route
+    navigate(`/platform/profile/${maker.id}`);
+  };
 
   return (
     <div className={styles.container}>
@@ -114,7 +119,7 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
           <p className={styles.productPrice}>{product.price}</p>
 
           {/* MAKER MINI-PROFILE SECTION */}
-          <div className={styles.makerSection} onClick={() => setActiveTab('profile')}>
+          <div className={styles.makerSection} onClick={handleViewProfile}>
             <div className={styles.makerInfo}>
               <img src={maker.avatar} alt={maker.name} className={styles.makerAvatar} />
               <div className={styles.makerMeta}>
@@ -128,7 +133,7 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
                 </div>
                 <span className={styles.makerHandle}>{maker.handle}</span>
                 <div className={styles.makerStats}>
-                  <span>⭐ {maker.rating}</span>
+                  <span>★ {maker.rating}</span>
                   <span>•</span>
                   <span>{maker.sales} sales</span>
                   <span>•</span>
@@ -216,7 +221,7 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
                 </div>
             </div>
 
-            <button className={styles.messageBtn} onClick={() => setActiveTab('chat')}>
+            <button className={styles.messageBtn} onClick={() => navigate('/platform/chat')}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14 8.38 8.38 0 0 1 3.8.9L21 3z"/>
               </svg>
@@ -233,7 +238,6 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
               {addedToCart ? "Added to Loop" : "Add to Cart"}
             </button>
             
-            {/* Custom Request Button for Made-to-Order */}
             <button 
               className={styles.requestBtn}
               onClick={() => setShowRequestModal(true)}
@@ -264,7 +268,7 @@ const ProductDetail = ({ product, onBack, addToCart, isSaved, toggleSaved, setAc
       <div className={styles.otherProductsSection}>
         <div className={styles.sectionHeader}>
           <h3>More from {maker.name}</h3>
-          <button className={styles.viewAllBtn} onClick={() => setActiveTab('profile')}>
+          <button className={styles.viewAllBtn} onClick={handleViewProfile}>
             View Full Catalog →
           </button>
         </div>

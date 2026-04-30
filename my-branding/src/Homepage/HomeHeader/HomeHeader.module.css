@@ -41,7 +41,7 @@
 
 /* --- HEADER --- */
 .header {
-  height: 80px;
+  height: 90px; /* Increased height slightly for labels */
   width: 100%;
   background: var(--brut-bg);
   border-bottom: 1px solid var(--brut-border);
@@ -142,17 +142,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-}
-
-.avatarBtn {
-  padding: 0 !important;
-  overflow: hidden;
-  border: 2px solid var(--brut-text) !important;
-}
-
-.avatarBtn:hover {
-  transform: scale(1.05) !important;
+  border-radius: 8px;
 }
 
 /* --- DROPDOWN --- */
@@ -170,14 +160,8 @@
 }
 
 @keyframes dropdownFade {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .searchMeta {
@@ -200,11 +184,6 @@
   margin-top: 0;
 }
 
-.marginTop {
-  margin-top: 25px;
-}
-
-/* ATELIERS */
 .atelierRow {
   display: flex;
   gap: 20px;
@@ -214,9 +193,7 @@
   -ms-overflow-style: none;
 }
 
-.atelierRow::-webkit-scrollbar {
-  display: none;
-}
+.atelierRow::-webkit-scrollbar { display: none; }
 
 .atelierStory {
   display: flex;
@@ -235,9 +212,7 @@
   transition: transform 0.2s ease;
 }
 
-.ring:hover {
-  transform: scale(1.05);
-}
+.ring:hover { transform: scale(1.05); }
 
 .ring img {
   width: 100%;
@@ -253,90 +228,74 @@
   color: var(--brut-text);
 }
 
-/* RESULTS */
-.searchResultsList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.searchResultItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  background: var(--brut-hover);
-  padding: 12px 18px;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  color: var(--brut-text);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.searchResultItem:hover {
-  border-color: var(--brut-text);
-  transform: translateX(5px);
-  background: var(--brut-card);
-}
-
-.resultText {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.resultImage {
-  width: 45px;
-  height: 45px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.resultImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* --- ACTIONS --- */
+/* --- ACTIONS WITH LABELS --- */
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 24px;
 }
 
-.iconBtn {
-  background: var(--brut-card);
-  border: 1px solid var(--brut-border);
+.actionItem {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
   color: var(--brut-text);
+}
+
+.actionItem:hover {
+  transform: translateY(-2px);
+}
+
+.activeAction .iconWrapper {
+  background: var(--brut-hover);
+  border-color: var(--brut-text);
+}
+
+.activeAction .actionLabel {
+  font-weight: 800;
+  opacity: 1;
+}
+
+.iconWrapper {
   width: 46px;
   height: 46px;
+  background: var(--brut-card);
+  border: 1px solid var(--brut-border);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  cursor: pointer;
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
-.iconBtn:hover {
+.actionItem:hover .iconWrapper {
   border-color: var(--brut-text);
-  transform: translateY(-2px);
   background: var(--brut-bg);
 }
 
-.iconBtn:active {
-  transform: translateY(0);
+.actionLabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--brut-text);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -6px;
+  right: -6px;
   background: var(--brut-text);
   color: var(--brut-bg);
   font-size: 0.6rem;
@@ -362,17 +321,21 @@
   }
   
   .header {
-    height: 65px;
+    height: 85px;
   }
   
   .headerActions {
-    gap: 10px;
+    gap: 16px;
   }
   
-  .iconBtn {
+  .iconWrapper {
     width: 42px;
     height: 42px;
     border-radius: 10px;
+  }
+  
+  .actionLabel {
+    font-size: 0.6rem;
   }
   
   .badge {
@@ -394,27 +357,35 @@
   }
   
   .headerActions {
-    gap: 8px;
+    gap: 12px;
   }
   
-  .iconBtn {
-    width: 40px;
-    height: 40px;
+  .iconWrapper {
+    width: 38px;
+    height: 38px;
   }
   
-  .iconBtn svg {
+  .iconWrapper svg {
     width: 18px;
     height: 18px;
+  }
+  
+  .actionLabel {
+    font-size: 0.55rem;
   }
 }
 
 @media (max-width: 360px) {
   .headerActions {
-    gap: 6px;
+    gap: 8px;
   }
   
-  .iconBtn {
-    width: 38px;
-    height: 38px;
+  .iconWrapper {
+    width: 34px;
+    height: 34px;
+  }
+  
+  .actionLabel {
+    display: none; /* Hide labels on very small screens if needed */
   }
 }

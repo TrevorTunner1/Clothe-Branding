@@ -4,7 +4,7 @@
     max-width: 100%;
     margin: 0 auto;
     padding: 120px 0;
-    background-color: #ffffff; /* Reverted to Pure White to match Brutige branding */
+    background-color: #ffffff;
     overflow: hidden;
 }
 
@@ -46,66 +46,65 @@
 
 .card {
     position: relative;
-    background: #000; /* Contrast for images */
+    background: #000;
     overflow: hidden;
     cursor: pointer;
+    /* Ensure borders don't affect layout */
+    box-sizing: border-box; 
 }
 
+/* The Image */
 .image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: grayscale(100%); /* Grayscale from Design 1 */
-    transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    /* Initial State: Zoomed in slightly and B&W */
+    transform: scale(1.1); 
+    filter: grayscale(100%);
+    will-change: transform, filter;
+}
+
+/* The Animated Frame (Border Reveal) */
+.frame {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255, 255, 255, 0);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    transition: border-color 0.3s ease;
+    /* Create a corner effect using clip-path or just rely on border */
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0);
+}
+
+/* Minimal Label (Optional: Shows title subtly at bottom) */
+.minimalLabel {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+    z-index: 3;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.card:hover .minimalLabel {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* --- Bento Spans --- */
 .wide { grid-column: span 2; }
 .tall { grid-row: span 2; }
 .small { grid-column: span 1; }
-
-/* --- Hover Effects (Merging Design 1) --- */
-.galleryOverlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 70%);
-    display: flex;
-    align-items: flex-end;
-    padding: 30px;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.overlayContent h3 {
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.viewBtn {
-    background: #fff;
-    color: #000;
-    border: none;
-    padding: 10px 20px;
-    font-weight: 700;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    cursor: pointer;
-}
-
-.card:hover .galleryOverlay {
-    opacity: 1;
-}
-
-.card:hover .image {
-    scale: 1.1;
-    filter: grayscale(0%); /* Turns to color on hover from Design 1 */
-}
 
 /* --- Responsive --- */
 @media (max-width: 1024px) {
@@ -129,10 +128,19 @@
         grid-row: span 1 !important;
     }
 
-    .galleryOverlay {
-        opacity: 1; /* Keep titles visible on mobile */
-    }
+    /* On mobile, maybe keep color but no hover effects needed */
     .image {
+        transform: scale(1);
         filter: grayscale(0%);
+    }
+    .minimalLabel {
+        opacity: 1;
+        transform: translateY(0);
+        bottom: 15px;
+        left: 15px;
+        background: rgba(0,0,0,0.4);
+        padding: 4px 8px;
+        border-radius: 4px;
+        backdrop-filter: blur(4px);
     }
 }

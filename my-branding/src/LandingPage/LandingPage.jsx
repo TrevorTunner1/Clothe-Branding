@@ -12,13 +12,15 @@ import InfrastructureHero from './LandingPageHero/LandingPageHero';
 import DesignerSection from './LandingPageDesigner/LandingPageDesigner';
 import ShowcaseGrid from './LandingPageGrid/LandingPageGrid';
 import FAQSection from './FAQSection/FAQSection';
-import Footer from './LandingFooter/LandPageFooter';
+import Footer from './LandingFooter/LandingPageFooter';
 
 // Background & Concept Components
 import BackgroundObjects from './BackgroundObjects';
 import ConceptManifesto from './ConceptManifesto/ConceptManifesto';
 
 import styles from './LandingPage.module.css';
+import LandingPageDesigner from './LandingPageDesigner/LandingPageDesigner';
+import LandingPageBlueprint from './LandingPageBlueprint/LandingPageBlueprint';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,6 +67,8 @@ function LandingPage() {
 
                 {/* SECTION 6: The Infrastructure (Black Section) */}
                 <Community /> 
+
+                <LandingPageBlueprint />
 
                 {/* SECTION 7: Identity Branding Hero */}
                 <InfrastructureHero />

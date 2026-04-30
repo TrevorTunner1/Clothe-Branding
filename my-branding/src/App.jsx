@@ -11,6 +11,10 @@ import ForgottenPassword from './Form/ForgottenPassword';
 import VerifyPassword from './Form/VerifyPassword';
 import MakerStudio from './MakerStudio/MakerStudio/MakerStudio';
 
+// New Form Components
+import ChangePasswordForm from './Form/ChangePasswordForm';
+import TwoStepSetup from './Form/TwoFactorSetup';
+
 // Global Infrastructure Components
 import Preloader from './Homepage/Preloader/Preloader';
 import FloatingMessage from './Notification/FloatingMessage';
@@ -62,8 +66,12 @@ function App() {
         <Route path="/maker-signup" element={<MakerSignUp notify={notify} />} />
         <Route path="/forgot-password" element={<ForgottenPassword notify={notify} />} />
         <Route path="/verify" element={<VerifyPassword notify={notify} />} />
+        
+        {/* 4. Account Management Forms (Modal Routes) */}
+        <Route path="/change-password" element={<ChangePasswordForm notify={notify} />} />
+        <Route path="/2fa-setup" element={<TwoStepSetup notify={notify} />} />
 
-        {/* 4. MAKER STUDIO (Standalone Sub-Routes) */}
+        {/* 5. MAKER STUDIO (Standalone Sub-Routes) */}
         <Route 
           path="/studio/*" 
           element={
@@ -75,7 +83,7 @@ function App() {
           } 
         />
 
-        {/* 5. THE PLATFORM HUB (Shop, Chat, Profile) */}
+        {/* 6. THE PLATFORM HUB (Shop, Chat, Profile) */}
         <Route 
           path="/platform/*" 
           element={
@@ -87,7 +95,7 @@ function App() {
           } 
         />
 
-        {/* 6. Catch-all: Back to Landing */}
+        {/* 7. Catch-all: Back to Landing */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

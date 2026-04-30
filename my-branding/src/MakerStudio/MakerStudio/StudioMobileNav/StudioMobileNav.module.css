@@ -1,4 +1,4 @@
-/* Studio Mobile Navigation - Same style as platform */
+/* Studio Mobile Navigation - Brutige Studio */
 
 .wrapper {
   display: none;
@@ -7,20 +7,24 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
+  pointer-events: none; /* Let clicks pass through around the pill */
 }
 
 .pill {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   background: var(--brut-card);
   border: 1px solid var(--brut-border);
   border-radius: 100px;
-  padding: 8px 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.05);
   backdrop-filter: blur(20px);
+  pointer-events: auto;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Nav Buttons (Standard) */
 .navBtn {
   width: 48px;
   height: 48px;
@@ -33,20 +37,25 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  opacity: 0.5;
+  opacity: 0.6;
+  flex-shrink: 0;
+  position: relative;
 }
 
 .navBtn:hover {
-  opacity: 0.8;
+  opacity: 1;
   background: var(--brut-hover);
+  transform: scale(1.05);
 }
 
 .navBtn.active {
   opacity: 1;
   background: var(--brut-text);
   color: var(--brut-bg);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+/* More Button (Three Dots) */
 .moreBtn {
   width: 48px;
   height: 48px;
@@ -59,13 +68,15 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  opacity: 0.5;
+  opacity: 0.6;
   margin-left: 4px;
   border-left: 1px solid var(--brut-border);
+  flex-shrink: 0;
 }
 
 .moreBtn:hover {
-  opacity: 0.8;
+  opacity: 1;
+  background: var(--brut-hover);
 }
 
 .moreActive {
@@ -74,20 +85,23 @@
   color: var(--brut-bg);
 }
 
-/* Bottom Sheet */
+/* Bottom Sheet (Modal Menu) */
 .bottomSheet {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   background: var(--brut-card);
-  border-radius: 24px 24px 0 0;
-  padding: 16px 20px 30px;
-  z-index: 1001;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
   transform: translateY(100%);
-  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-  max-height: 70vh;
-  overflow-y: auto;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1001;
+  max-height: 75vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+  border-top: 1px solid var(--brut-border);
 }
 
 .showSheet {
@@ -97,7 +111,8 @@
 .sheetHeader {
   display: flex;
   justify-content: center;
-  padding-bottom: 16px;
+  padding: 16px;
+  flex-shrink: 0;
 }
 
 .dragBar {
@@ -106,22 +121,32 @@
   background: var(--brut-border);
   border-radius: 2px;
   cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.dragBar:hover {
+  opacity: 1;
 }
 
 .sheetContent {
+  padding: 0 20px 40px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .sheetBtn {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px 20px;
-  background: var(--brut-hover);
+  width: 100%;
+  padding: 18px 16px;
+  background: none;
   border: none;
-  border-radius: 16px;
+  border-radius: 14px;
   color: var(--brut-text);
   font-size: 1rem;
   font-weight: 600;
@@ -131,32 +156,56 @@
 }
 
 .sheetBtn:hover {
-  background: var(--brut-border);
+  background: var(--brut-hover);
   transform: translateX(4px);
 }
 
 .sheetBtn svg {
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
-.themeBtn {
+/* Pro Button in Sheet */
+.proSheetBtn {
+  color: var(--brut-warning);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.proSheetBtn:hover {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--brut-warning);
+}
+
+.proSheetBtn svg {
+  fill: currentColor;
+  stroke: none;
+  opacity: 1;
+}
+
+.sheetDivider {
+  height: 1px;
+  background: var(--brut-border);
+  margin: 12px 0;
+  opacity: 0.5;
+}
+
+.exitBtn {
+  color: var(--brut-danger);
   margin-top: 8px;
-  background: var(--brut-text);
-  color: var(--brut-bg);
 }
 
-.themeBtn:hover {
-  background: var(--brut-text);
-  opacity: 0.9;
+.exitBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--brut-danger);
 }
 
-/* Overlay */
+/* Overlay Background */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   z-index: 1000;
-  animation: fadeIn 0.2s ease;
+  animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
@@ -164,27 +213,27 @@
   to { opacity: 1; }
 }
 
-/* Show on mobile */
+/* Responsive Logic */
 @media (max-width: 900px) {
   .wrapper {
     display: block;
   }
-}
-
-@media (max-width: 480px) {
-  .pill {
-    padding: 6px 10px;
-  }
   
-  .navBtn,
-  .moreBtn {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .navBtn svg,
-  .moreBtn svg {
-    width: 20px;
-    height: 20px;
+  /* Adjust for very small screens like Fold */
+  @media (max-width: 360px) {
+    .pill {
+      padding: 6px;
+      gap: 4px;
+    }
+    
+    .navBtn, .moreBtn {
+      width: 44px;
+      height: 44px;
+    }
+    
+    .navBtn svg, .moreBtn svg {
+      width: 22px;
+      height: 22px;
+    }
   }
 }
