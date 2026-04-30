@@ -31,8 +31,8 @@ const AuthLayout = ({ children, phrases }) => {
     <div ref={container} className={styles.mainWrapper}>
       <div className={styles.formSection}>{children}</div>
       <div className={styles.brandSection}>
-        <div className={styles.line} style={{top: '20%', left: '10%', width: '300px'}} />
-        <div className={styles.line} style={{bottom: '30%', right: '15%', width: '400px'}} />
+        <div className={styles.line} style={{ top: '20%', left: '10%', width: '300px' }} />
+        <div className={styles.line} style={{ bottom: '30%', right: '15%', width: '400px' }} />
         <div className={styles.typewriterBox}>
           <h2 className={styles.typewriterText}>
             <span ref={textRef}></span>

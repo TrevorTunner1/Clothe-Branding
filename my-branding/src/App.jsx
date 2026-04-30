@@ -10,15 +10,15 @@ import MakerSignUp from './Form/MakerSignUp';
 import ForgottenPassword from './Form/ForgottenPassword';
 import VerifyPassword from './Form/VerifyPassword';
 import MakerStudio from './MakerStudio/MakerStudio/MakerStudio';
+import { useAuthStore } from './context/AuthContext';
 
 // Global Infrastructure Components
 import Preloader from './Homepage/Preloader/Preloader';
 import FloatingMessage from './Notification/FloatingMessage';
-
-// Global Validation Helper
-export const validateEmail = (email) => {
-  return String(email).toLowerCase().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-};
+import { PublicRoutes } from './Routes/PublicRoutes';
+import { VerifyRoutes } from './Routes/VerifyRoutes';
+import { ProtectedRoutes } from './Routes/ProtectedRoutes';
+import OAuthCallback from './Routes/OauthCallBack';
 
 function App() {
   // --- GLOBAL STATE ---
@@ -27,7 +27,11 @@ function App() {
   });
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [notification, setNotification] = useState({ message: '', type: 'success', visible: false });
+  const { initializeAuth } = useAuthStore();
 
+  useEffect(() => {
+    initializeAuth(); // runs once on load — restores session from cookie
+  }, []);
   // --- THEME SYNC ---
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
@@ -46,10 +50,10 @@ function App() {
   return (
     <Router>
       {/* 1. Global Notification Layer (Floats at bottom) */}
-      <FloatingMessage 
-        message={notification.message} 
-        type={notification.type} 
-        isVisible={notification.visible} 
+      <FloatingMessage
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.visible}
       />
 
       <Routes>
@@ -57,34 +61,41 @@ function App() {
         <Route path="/" element={<LandingPage />} />
 
         {/* 3. Auth Flow - Passing 'notify' to every page */}
-        <Route path="/login" element={<SignInPage notify={notify} />} />
-        <Route path="/signup" element={<SignUpPage notify={notify} />} />
-        <Route path="/maker-signup" element={<MakerSignUp notify={notify} />} />
-        <Route path="/forgot-password" element={<ForgottenPassword notify={notify} />} />
-        <Route path="/verify" element={<VerifyPassword notify={notify} />} />
+        <Route path="/login" element={<PublicRoutes><SignInPage notify={notify} /></PublicRoutes>} />
+        <Route path="/signup" element={<PublicRoutes><SignUpPage notify={notify} /></PublicRoutes>} />
+        <Route path="/maker-signup" element={<PublicRoutes><MakerSignUp notify={notify} /></PublicRoutes>} />
+        <Route path="/forgot-password" element={<PublicRoutes><ForgottenPassword notify={notify} /></PublicRoutes>} />
+        <Route path="/verify" element={<VerifyRoutes><VerifyPassword notify={notify} /></VerifyRoutes>} />
 
-        {/* 4. MAKER STUDIO (Standalone Sub-Routes) */}
-        <Route 
-          path="/studio/*" 
+        {/* Studio */}
+        <Route
+          path="/studio/*"
           element={
-            isAppLoading ? (
-              <Preloader onComplete={() => setIsAppLoading(false)} />
-            ) : (
-              <MakerStudio isDarkMode={isDarkMode} toggleTheme={toggleTheme} notify={notify} />
-            )
-          } 
+            <ProtectedRoutes>
+              {isAppLoading ? (
+                <Preloader onComplete={() => setIsAppLoading(false)} />
+              ) : (
+                <MakerStudio isDarkMode={isDarkMode} toggleTheme={toggleTheme} notify={notify} />
+              )}
+            </ProtectedRoutes>
+          }
         />
 
-        {/* 5. THE PLATFORM HUB (Shop, Chat, Profile) */}
-        <Route 
-          path="/platform/*" 
+
+        <Route path="/oauth2/callback" element={<OAuthCallback />} />
+
+        {/* Platform */}
+        <Route
+          path="/platform/*"
           element={
-            isAppLoading ? (
-              <Preloader onComplete={() => setIsAppLoading(false)} />
-            ) : (
-              <BrutigePlatform isDarkMode={isDarkMode} toggleTheme={toggleTheme} notify={notify} />
-            )
-          } 
+            <ProtectedRoutes>
+              {isAppLoading ? (
+                <Preloader onComplete={() => setIsAppLoading(false)} />
+              ) : (
+                <BrutigePlatform isDarkMode={isDarkMode} toggleTheme={toggleTheme} notify={notify} />
+              )}
+            </ProtectedRoutes>
+          }
         />
 
         {/* 6. Catch-all: Back to Landing */}

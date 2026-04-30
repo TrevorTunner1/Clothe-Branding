@@ -3,16 +3,16 @@ import { useNavigate, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { TextPlugin } from 'gsap/TextPlugin';
-import { validateEmail } from '../App';
+import { validateEmail } from '../util/validation';
 import styles from './SignInPage.module.css';
-
+import { useAuthStore } from '../context/AuthContext';
 gsap.registerPlugin(TextPlugin);
 
 const BrutigeLogo = ({ color = "black" }) => (
   <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
-    <circle cx="50" cy="50" r="50" fill={color}/>
-    <path d="M48 25L48 65L25 80L48 25Z" fill={color === "black" ? "white" : "black"} fillOpacity="0.8"/>
-    <path d="M52 25L52 65L75 80L52 25Z" fill={color === "black" ? "white" : "black"}/>
+    <circle cx="50" cy="50" r="50" fill={color} />
+    <path d="M48 25L48 65L25 80L48 25Z" fill={color === "black" ? "white" : "black"} fillOpacity="0.8" />
+    <path d="M52 25L52 65L75 80L52 25Z" fill={color === "black" ? "white" : "black"} />
   </svg>
 );
 
@@ -21,6 +21,7 @@ const SignInPage = ({ notify }) => {
   const textRef = useRef();
   const cursorRef = useRef();
   const navigate = useNavigate();
+  const { login, isLoading, error } = useAuthStore();
 
   // FORM STATE
   const [email, setEmail] = useState('');
@@ -37,7 +38,7 @@ const SignInPage = ({ notify }) => {
   useGSAP(() => {
     // 1. Entrance Animation
     gsap.from(`.${styles.formWrapper} > *`, { opacity: 0, y: 30, stagger: 0.1, duration: 1, ease: "expo.out" });
-    
+
     // 2. Background Lines
     const lines = gsap.utils.toArray(`.${styles.line}`);
     lines.forEach((line, i) => {
@@ -54,7 +55,7 @@ const SignInPage = ({ notify }) => {
     gsap.to(cursorRef.current, { opacity: 0, ease: "power2.inOut", repeat: -1 });
   }, { scope: container });
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!validateEmail(email)) {
       notify("Authentication failed. Invalid email format.", "error");
@@ -64,16 +65,23 @@ const SignInPage = ({ notify }) => {
       notify("Security requirement. Password too short.", "error");
       return;
     }
-    
-    notify("Identity verified. Entering platform...", "success");
-    setTimeout(() => navigate("/platform/shop"), 1500);
+
+    const result = await login(email, password);
+
+    if (result.success) {
+      notify("Identity verified. Entering platform...", "success");
+      setTimeout(() => navigate("/platform/shop"), 1500);
+    } else {
+      notify(result.message, "error");
+    }
+
   };
 
   return (
     <div ref={container} className={styles.mainWrapper}>
       <div className={styles.formSection}>
         <div className={styles.formWrapper}>
-          <div className={styles.logoHeader} onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
+          <div className={styles.logoHeader} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <BrutigeLogo color="black" />
             <span className={styles.brandName}>brutige</span>
           </div>
@@ -82,9 +90,14 @@ const SignInPage = ({ notify }) => {
           <p className={styles.subtitle}>Sign in to your branding infrastructure.</p>
 
           <div className={styles.socialGrid}>
-            <button type="button" className={styles.socialBtn}>
+            <button
+              onClick={() => {
+                window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+              }}
+              className={styles.socialBtn}
+            >
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="" />
-              <span>Google</span>
+              Continue with Google
             </button>
             <button type="button" className={styles.socialBtn}>
               <img src="https://www.svgrepo.com/show/511330/apple-173.svg" className={styles.appleIcon} alt="" />
@@ -110,14 +123,14 @@ const SignInPage = ({ notify }) => {
           <div className={styles.authFooter}>
             <p className={styles.footerLink}>New here? <Link to="/signup">Request Access</Link></p>
             <p className={styles.footerLink}>Artisan? <Link to="/maker-signup">Join as a Maker</Link></p>
-            <p className={styles.footerLink}><Link to="/forgot-password" style={{opacity: 0.5}}>Forgotten credentials?</Link></p>
+            <p className={styles.footerLink}><Link to="/forgot-password" style={{ opacity: 0.5 }}>Forgotten credentials?</Link></p>
           </div>
         </div>
       </div>
 
       <div className={styles.brandSection}>
-        <div className={styles.line} style={{top: '20%', left: '10%', width: '300px'}} />
-        <div className={styles.line} style={{top: '50%', right: '10%', width: '400px'}} />
+        <div className={styles.line} style={{ top: '20%', left: '10%', width: '300px' }} />
+        <div className={styles.line} style={{ top: '50%', right: '10%', width: '400px' }} />
         <div className={styles.typewriterBox}>
           <h2 className={styles.typewriterText}>
             <span ref={textRef}></span>

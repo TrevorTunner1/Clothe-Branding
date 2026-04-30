@@ -3,16 +3,17 @@ import { useNavigate, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { TextPlugin } from 'gsap/TextPlugin';
-import { validateEmail } from '../App';
+import { validateEmail } from '../util/validation';
 import styles from './SignUpPage.module.css';
+import { useAuthStore } from '../context/AuthContext';
 
 gsap.registerPlugin(TextPlugin);
 
 const BrutigeLogo = ({ color = "black" }) => (
   <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
-    <circle cx="50" cy="50" r="50" fill={color}/>
-    <path d="M48 25L48 65L25 80L48 25Z" fill={color === "black" ? "white" : "black"} fillOpacity="0.8"/>
-    <path d="M52 25L52 65L75 80L52 25Z" fill={color === "black" ? "white" : "black"}/>
+    <circle cx="50" cy="50" r="50" fill={color} />
+    <path d="M48 25L48 65L25 80L48 25Z" fill={color === "black" ? "white" : "black"} fillOpacity="0.8" />
+    <path d="M52 25L52 65L75 80L52 25Z" fill={color === "black" ? "white" : "black"} />
   </svg>
 );
 
@@ -24,7 +25,7 @@ const SignUpPage = ({ notify }) => {
 
   // FORM STATE
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-
+  const { signup, isLoading, error } = useAuthStore();
   const phrases = [
     "brutige: join the infrastructure.",
     "design the future of fashion.",
@@ -35,24 +36,24 @@ const SignUpPage = ({ notify }) => {
 
   useGSAP(() => {
     // 1. Entrance Animation for Form Elements
-    gsap.from(`.${styles.formWrapper} > *`, { 
-      opacity: 0, 
-      y: 30, 
-      stagger: 0.1, 
-      duration: 1, 
-      ease: "expo.out" 
+    gsap.from(`.${styles.formWrapper} > *`, {
+      opacity: 0,
+      y: 30,
+      stagger: 0.1,
+      duration: 1,
+      ease: "expo.out"
     });
 
     // 2. Background Architectural Line Drift
     const lines = gsap.utils.toArray(`.${styles.line}`);
     lines.forEach((line, i) => {
-      gsap.to(line, { 
-        x: i % 2 === 0 ? 80 : -80, 
-        opacity: 0.2, 
-        duration: 10 + i, 
-        repeat: -1, 
-        yoyo: true, 
-        ease: "sine.inOut" 
+      gsap.to(line, {
+        x: i % 2 === 0 ? 80 : -80,
+        opacity: 0.2,
+        duration: 10 + i,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
       });
     });
 
@@ -60,10 +61,10 @@ const SignUpPage = ({ notify }) => {
     let masterTl = gsap.timeline({ repeat: -1 });
     phrases.forEach((phrase) => {
       let tl = gsap.timeline({ repeat: 1, yoyo: true, repeatDelay: 2 });
-      tl.to(textRef.current, { 
-        duration: phrase.length * 0.05, 
-        text: { value: phrase, delimiter: "" }, 
-        ease: "none" 
+      tl.to(textRef.current, {
+        duration: phrase.length * 0.05,
+        text: { value: phrase, delimiter: "" },
+        ease: "none"
       });
       masterTl.add(tl);
     });
@@ -72,7 +73,7 @@ const SignUpPage = ({ notify }) => {
     gsap.to(cursorRef.current, { opacity: 0, ease: "steps(1)", repeat: -1, duration: 0.5 });
   }, { scope: container });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.name.length < 2) {
       return notify("Please enter your full name.", "error");
@@ -83,17 +84,22 @@ const SignUpPage = ({ notify }) => {
     if (formData.password.length < 8) {
       return notify("Security requires at least 8 characters.", "error");
     }
-    
-    // SUCCESS: Notify and Route
-    notify("Identity created. Verifying access...", "success");
-    setTimeout(() => navigate("/verify"), 1500);
+
+    const result = await signup(formData.name, formData.email, formData.password);
+
+    if (result.success) {
+      notify("Identity created. Verifying access...", "success");
+      setTimeout(() => navigate("/verify"), 1500);
+    } else {
+      notify(result.message, "error");
+    }
   };
 
   return (
     <div ref={container} className={styles.mainWrapper}>
       <div className={styles.formSection}>
         <div className={styles.formWrapper}>
-          <div className={styles.logoHeader} onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
+          <div className={styles.logoHeader} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <BrutigeLogo color="black" />
             <span className={styles.brandName}>brutige</span>
           </div>
@@ -102,9 +108,14 @@ const SignUpPage = ({ notify }) => {
           <p className={styles.subtitle}>Start building your brand infrastructure today.</p>
 
           <div className={styles.socialGrid}>
-            <button className={styles.socialBtn}>
+            <button
+              onClick={() => {
+                window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+              }}
+              className={styles.socialBtn}
+            >
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="" />
-              <span>GOOGLE</span>
+              Continue with Google
             </button>
             <button className={styles.socialBtn}>
               <img src="https://www.svgrepo.com/show/511330/apple-173.svg" alt="" className={styles.appleIcon} />
@@ -117,29 +128,29 @@ const SignUpPage = ({ notify }) => {
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.inputGroup}>
               <label>Full Name</label>
-              <input 
-                type="text" 
-                onChange={(e) => setFormData({...formData, name: e.target.value})} 
-                placeholder="Alexander McQueen" 
+              <input
+                type="text"
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Alexander McQueen"
               />
             </div>
             <div className={styles.inputGroup}>
               <label>Professional Email</label>
-              <input 
-                type="email" 
-                onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                placeholder="name@company.com" 
+              <input
+                type="email"
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="name@company.com"
               />
             </div>
             <div className={styles.inputGroup}>
               <label>Password</label>
-              <input 
-                type="password" 
-                onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                placeholder="••••••••" 
+              <input
+                type="password"
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="••••••••"
               />
             </div>
-            <button type="submit" className={styles.submitBtn}>Initialize &rarr;</button>
+            <button type="submit" className={styles.submitBtn}>{isLoading ? 'Initializing...' : 'Initialize →'}</button>
           </form>
 
           <div className={styles.authFooter}>
@@ -150,8 +161,8 @@ const SignUpPage = ({ notify }) => {
       </div>
 
       <div className={styles.brandSection}>
-        <div className={styles.line} style={{top: '15%', left: '10%', width: '250px'}} />
-        <div className={styles.line} style={{bottom: '30%', left: '20%', width: '200px'}} />
+        <div className={styles.line} style={{ top: '15%', left: '10%', width: '250px' }} />
+        <div className={styles.line} style={{ bottom: '30%', left: '20%', width: '200px' }} />
         <div className={styles.typewriterBox}>
           <h2 className={styles.typewriterText}>
             <span ref={textRef}></span>

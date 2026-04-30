@@ -3,7 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { TextPlugin } from 'gsap/TextPlugin';
-import { validateEmail } from '../App';
+import { validateEmail } from '../util/validation';
+
+gsap.registerPlugin(TextPlugin);
+
 import styles from './SignInPage.module.css';
 
 gsap.registerPlugin(TextPlugin);
@@ -49,7 +52,7 @@ const ForgottenPassword = () => {
         </div>
       </div>
       <div className={styles.brandSection}>
-        <div className={styles.line} style={{top: '40%', left: '5%', width: '350px'}} />
+        <div className={styles.line} style={{ top: '40%', left: '5%', width: '350px' }} />
         <div className={styles.typewriterBox}><h2 className={styles.typewriterText}><span ref={textRef}></span>|</h2></div>
       </div>
     </div>
